@@ -6,6 +6,8 @@
   <title>Apply for Access — Harper</title>
   <link rel="stylesheet" href="css/harper.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <!-- Supabase JS library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background: var(--gray-pale); }
     .apply-shell { min-height: 100vh; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; }
@@ -38,7 +40,6 @@
     .next-text { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.6; }
     .step { display: none; }
     .step.active { display: block; }
-    .loading { opacity: 0.6; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -53,7 +54,7 @@
         <div class="step-dot" id="d4"></div>
       </div>
 
-      <!-- Step 1: Personal info + account creation -->
+      <!-- Step 1 -->
       <div class="step active" id="step1">
         <div class="step-eyebrow">Step 1 of 4</div>
         <div class="step-title">Who are you?</div>
@@ -75,7 +76,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input class="form-input" type="password" id="password" placeholder="Create a secure password" />
+          <input class="form-input" type="password" id="password" placeholder="Create a secure password (min 6 characters)" />
         </div>
         <div class="form-group">
           <label class="form-label">Phone number</label>
@@ -85,7 +86,7 @@
         <p class="form-note">We will never share your information with third parties.</p>
       </div>
 
-      <!-- Step 2: Search preferences -->
+      <!-- Step 2 -->
       <div class="step" id="step2">
         <div class="step-eyebrow">Step 2 of 4</div>
         <div class="step-title">Your search</div>
@@ -133,7 +134,7 @@
         </div>
       </div>
 
-      <!-- Step 3: Income verification -->
+      <!-- Step 3 -->
       <div class="step" id="step3">
         <div class="step-eyebrow">Step 3 of 4</div>
         <div class="step-title">Income verification</div>
@@ -179,7 +180,7 @@
         <p class="form-note">256-bit encryption · SOC 2 compliant · Never sold or shared</p>
       </div>
 
-      <!-- Step 4: Final details -->
+      <!-- Step 4 -->
       <div class="step" id="step4">
         <div class="step-eyebrow">Step 4 of 4</div>
         <div class="step-title">Final details</div>
@@ -236,17 +237,18 @@
 
   <script>
     // ============================================
-    // HARPER — Supabase Configuration
+    // HARPER — Supabase Setup using official JS library
     // ============================================
-    const SUPABASE_URL = 'https://qooofbxwhjmeoyhsihki.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_7J8djU8_1ORfR2e_CFTO3g_ED2OaUPU';
+    const { createClient } = supabase;
+    const client = createClient(
+      'https://qooofbxwhjmeoyhsihki.supabase.co',
+      'sb_publishable_7J8djU8_1ORfR2e_CFTO3g_ED2OaUPU'
+    );
 
-    // Store application data across steps
     let appData = {};
-    let userId = null;
 
     // ============================================
-    // Step 1: Create account in Supabase Auth
+    // Step 1: Create account
     // ============================================
     async function submitStep1() {
       const firstName = document.getElementById('firstName').value.trim();
@@ -257,7 +259,6 @@
       const errorEl   = document.getElementById('error1');
       const btn       = document.getElementById('btn1');
 
-      // Basic validation
       if (!firstName || !lastName || !email || !password) {
         errorEl.textContent = 'Please fill in all required fields.';
         errorEl.classList.add('show');
@@ -271,51 +272,28 @@
 
       errorEl.classList.remove('show');
       btn.textContent = 'Creating your account…';
-      btn.classList.add('loading');
+      btn.disabled = true;
 
-      try {
-        // Sign up with Supabase Auth
-        const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY
-          },
-          body: JSON.stringify({ email, password })
-        });
+      const { data, error } = await client.auth.signUp({ email, password });
 
-        const data = await res.json();
-
-        if (data.error) {
-          errorEl.textContent = data.error.message || 'Something went wrong. Please try again.';
-          errorEl.classList.add('show');
-          btn.textContent = 'Continue →';
-          btn.classList.remove('loading');
-          return;
-        }
-
-        // Save user data for later steps
-        userId = data.user?.id;
-        appData.firstName     = firstName;
-        appData.lastName      = lastName;
-        appData.email         = email;
-        appData.phone         = phone;
-        appData.accessToken   = data.access_token;
-
-        btn.textContent = 'Continue →';
-        btn.classList.remove('loading');
-        goTo(2);
-
-      } catch (err) {
-        errorEl.textContent = 'Network error. Please check your connection and try again.';
+      if (error) {
+        errorEl.textContent = error.message;
         errorEl.classList.add('show');
         btn.textContent = 'Continue →';
-        btn.classList.remove('loading');
+        btn.disabled = false;
+        return;
       }
+
+      // Save for final submission
+      appData = { firstName, lastName, email, phone };
+
+      btn.textContent = 'Continue →';
+      btn.disabled = false;
+      goTo(2);
     }
 
     // ============================================
-    // Step 4: Save full application to Supabase
+    // Step 4: Save application to database
     // ============================================
     async function submitApplication() {
       const errorEl = document.getElementById('error4');
@@ -329,70 +307,46 @@
 
       errorEl.classList.remove('show');
       btn.textContent = 'Submitting…';
-      btn.classList.add('loading');
+      btn.disabled = true;
 
-      // Collect neighborhood selections
       const neighborhoods = [...document.querySelectorAll('#neighborhoods .pill.active')]
         .map(p => p.textContent).join(', ');
 
-      // Build the full application record
-      const application = {
-        user_id:          userId,
-        first_name:       appData.firstName,
-        last_name:        appData.lastName,
-        email:            appData.email,
-        phone:            appData.phone,
-        neighborhoods:    neighborhoods,
-        bedrooms:         document.getElementById('bedrooms').value,
-        move_in:          document.getElementById('moveIn').value,
-        employment:       document.getElementById('employment').value,
-        income_range:     document.getElementById('income').value,
-        verification:     document.getElementById('verification').value,
-        referral_source:  document.getElementById('referralSource').value,
-        referral_code:    document.getElementById('referralCode').value,
-        notes:            document.getElementById('notes').value,
-        status:           'pending',
-        submitted_at:     new Date().toISOString()
-      };
+      const { error } = await client.from('applications').insert({
+        first_name:      appData.firstName,
+        last_name:       appData.lastName,
+        email:           appData.email,
+        phone:           appData.phone,
+        neighborhoods:   neighborhoods,
+        bedrooms:        document.getElementById('bedrooms').value,
+        move_in:         document.getElementById('moveIn').value,
+        employment:      document.getElementById('employment').value,
+        income_range:    document.getElementById('income').value,
+        verification:    document.getElementById('verification').value,
+        referral_source: document.getElementById('referralSource').value,
+        referral_code:   document.getElementById('referralCode').value,
+        notes:           document.getElementById('notes').value,
+        status:          'pending',
+        submitted_at:    new Date().toISOString()
+      });
 
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/applications`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${appData.accessToken}`,
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify(application)
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          // Generate a reference number
-          const refNum = 'HRPR-2026-' + String(Math.floor(Math.random() * 90000) + 10000);
-          document.getElementById('appRef').textContent = 'Application #' + refNum;
-          btn.textContent = 'Submit application';
-          btn.classList.remove('loading');
-          goTo(5);
-        } else {
-          errorEl.textContent = data.message || 'Something went wrong saving your application. Please try again.';
-          errorEl.classList.add('show');
-          btn.textContent = 'Submit application';
-          btn.classList.remove('loading');
-        }
-
-      } catch (err) {
-        errorEl.textContent = 'Network error. Please check your connection and try again.';
+      if (error) {
+        errorEl.textContent = 'Error saving application: ' + error.message;
         errorEl.classList.add('show');
         btn.textContent = 'Submit application';
-        btn.classList.remove('loading');
+        btn.disabled = false;
+        return;
       }
+
+      const refNum = 'HRPR-2026-' + String(Math.floor(Math.random() * 90000) + 10000);
+      document.getElementById('appRef').textContent = 'Application #' + refNum;
+      btn.textContent = 'Submit application';
+      btn.disabled = false;
+      goTo(5);
     }
 
     // ============================================
-    // Navigation between steps
+    // Navigation
     // ============================================
     function goTo(n) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
