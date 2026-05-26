@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landlord Dashboard — Harper</title>
+  <link rel="stylesheet" href="css/harper.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    body { background: var(--gray-pale); }
+    .dash-nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: var(--border); background: var(--white); position: sticky; top: 0; z-index: 100; }
+    .nav-left { display: flex; align-items: baseline; gap: 8px; }
+    .portal-tag { font-size: 0.62rem; letter-spacing: 0.14em; color: var(--gray-light); text-transform: uppercase; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .nav-icon { position: relative; font-size: 1.1rem; color: var(--gray-mid); cursor: pointer; }
+    .nav-icon:hover { color: var(--gold); }
+    .user-av { width: 30px; height: 30px; border-radius: 50%; background: var(--gold-pale); border: 0.5px solid var(--gold-light); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 500; color: var(--gold-dark); cursor: pointer; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    .page-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; margin-bottom: 4px; }
+    .page-subtitle { font-size: 0.82rem; color: var(--gray-mid); margin-bottom: 1.5rem; }
+    /* Listing rows */
+    .listing-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: var(--border); }
+    .listing-row:last-child { border-bottom: none; }
+    .listing-thumb { width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--gray-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .listing-thumb i { font-size: 1.25rem; color: var(--gray-light); }
+    .listing-info { flex: 1; min-width: 0; }
+    .listing-addr { font-size: 0.82rem; font-weight: 500; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .listing-meta { font-size: 0.75rem; color: var(--gray-mid); margin-top: 2px; }
+    .listing-stats { display: flex; gap: 12px; margin-top: 4px; }
+    .listing-stat { font-size: 0.7rem; color: var(--gray-light); display: flex; align-items: center; gap: 3px; }
+    .listing-stat i { font-size: 0.75rem; }
+    .listing-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .action-btn { padding: 5px 12px; border: var(--border); border-radius: var(--radius-md); font-size: 0.7rem; color: var(--gray-mid); cursor: pointer; background: transparent; font-family: var(--font-body); }
+    .action-btn:hover { border-color: var(--gold); color: var(--gold); }
+    /* Inquiry rows */
+    .inquiry-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: var(--border); cursor: pointer; }
+    .inquiry-row:last-child { border-bottom: none; }
+    .inquiry-row:hover { opacity: 0.8; }
+    .inq-av { width: 36px; height: 36px; border-radius: 50%; background: var(--gold-pale); border: 0.5px solid var(--gold-light); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 500; color: var(--gold-dark); flex-shrink: 0; font-family: var(--font-display); }
+    .inq-info { flex: 1; min-width: 0; }
+    .inq-top { display: flex; align-items: center; gap: 6px; }
+    .inq-name { font-size: 0.82rem; font-weight: 500; color: var(--black); }
+    .inq-addr { font-size: 0.72rem; color: var(--gold); margin-top: 2px; }
+    .inq-preview { font-size: 0.75rem; color: var(--gray-mid); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .inq-right { text-align: right; flex-shrink: 0; }
+    .inq-time { font-size: 0.7rem; color: var(--gray-light); margin-bottom: 4px; }
+    .unread-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); margin-left: auto; }
+    /* Showing rows */
+    .showing-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: var(--border); }
+    .showing-row:last-child { border-bottom: none; }
+    .showing-date { min-width: 50px; text-align: center; background: var(--gray-pale); border-radius: var(--radius-md); padding: 6px; flex-shrink: 0; }
+    .showing-month { font-size: 0.6rem; letter-spacing: 0.1em; color: var(--gray-light); text-transform: uppercase; }
+    .showing-day { font-family: var(--font-display); font-size: 1.25rem; color: var(--black); line-height: 1; }
+    .showing-info { flex: 1; }
+    .showing-addr { font-size: 0.82rem; font-weight: 500; color: var(--black); }
+    .showing-meta { font-size: 0.75rem; color: var(--gray-mid); margin-top: 2px; }
+    .showing-renter { font-size: 0.72rem; color: var(--gold); margin-top: 2px; }
+    /* Analytics */
+    .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+    .analytics-card { background: var(--white); border: var(--border); border-radius: var(--radius-md); padding: 1rem; }
+    .analytics-label { font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 6px; }
+    .analytics-val { font-family: var(--font-display); font-size: 1.5rem; color: var(--black); }
+    .analytics-sub { font-size: 0.7rem; color: var(--gray-mid); margin-top: 3px; }
+    .analytics-up { font-size: 0.7rem; color: var(--teal); margin-top: 3px; }
+    /* Bar chart */
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .bar-label { font-size: 0.75rem; color: var(--gray-mid); min-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { flex: 1; height: 6px; background: var(--gray-pale); border-radius: 3px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; background: var(--gold); }
+    .bar-val { font-size: 0.75rem; color: var(--gray-light); min-width: 28px; text-align: right; }
+    /* Settings */
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: var(--border); }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-label { font-size: 0.82rem; color: var(--black); }
+    .settings-sub { font-size: 0.7rem; color: var(--gray-light); margin-top: 2px; }
+    .edit-link { font-size: 0.72rem; color: var(--gold); cursor: pointer; }
+    .profile-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: var(--border); }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-field-label { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 3px; }
+    .profile-field-val { font-size: 0.82rem; color: var(--black); }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="dash-nav">
+    <div class="nav-left">
+      <a href="index.html" class="harper-logo">H<span class="a">A</span>RPER</a>
+      <span class="portal-tag">· Landlord portal</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-icon" style="position:relative;"><i class="ti ti-bell"></i><span class="notif-dot"></span></div>
+      <a href="landlord-listing.html" class="btn btn-gold btn-sm"><i class="ti ti-plus" style="font-size:0.8rem;"></i> New listing</a>
+      <div class="user-av">RK</div>
+    </div>
+  </nav>
+
+  <div class="harper-layout">
+    <!-- Sidebar -->
+    <aside class="harper-sidebar">
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">RK</div>
+        <div class="sidebar-name">Robert Kim</div>
+        <div class="sidebar-sub">3 active listings</div>
+        <div style="margin-top:6px;"><span class="badge badge-gold"><i class="ti ti-shield-check" style="font-size:0.65rem;"></i> Verified landlord</span></div>
+      </div>
+
+      <div class="sidebar-section-label">Menu</div>
+      <div class="sidebar-nav-item active" onclick="showPage('overview',this)"><i class="ti ti-layout-dashboard"></i> Overview</div>
+      <div class="sidebar-nav-item" onclick="showPage('listings',this)"><i class="ti ti-building"></i> My listings <span class="nav-count">3</span></div>
+      <div class="sidebar-nav-item" onclick="showPage('inquiries',this)"><i class="ti ti-message"></i> Inquiries <span class="nav-count">8</span></div>
+      <div class="sidebar-nav-item" onclick="showPage('showings',this)"><i class="ti ti-calendar"></i> Showings <span class="nav-count">4</span></div>
+      <div class="sidebar-nav-item" onclick="showPage('analytics',this)"><i class="ti ti-chart-bar"></i> Analytics</div>
+
+      <div class="sidebar-section-label" style="margin-top:0.5rem;">Account</div>
+      <div class="sidebar-nav-item" onclick="showPage('settings',this)"><i class="ti ti-settings"></i> Settings</div>
+    </aside>
+
+    <!-- Main -->
+    <main class="harper-main">
+
+      <!-- Overview -->
+      <div id="page-overview" class="page-section active">
+        <div class="page-title">Good morning, Robert</div>
+        <div class="page-subtitle">Here's a snapshot of your Harper listings.</div>
+        <div class="metric-grid">
+          <div class="metric-card"><div class="metric-label">Active listings</div><div class="metric-val">3</div><div class="metric-sub">2 live · 1 in review</div></div>
+          <div class="metric-card"><div class="metric-label">Total inquiries</div><div class="metric-val">8</div><div class="metric-up">↑ 3 this week</div></div>
+          <div class="metric-card"><div class="metric-label">Showings</div><div class="metric-val">4</div><div class="metric-sub">upcoming</div></div>
+          <div class="metric-card"><div class="metric-label">Listing views</div><div class="metric-val">312</div><div class="metric-up">↑ 18% vs last week</div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Your listings</div><div class="section-link" onclick="showPage('listings',null)">View all →</div></div>
+          <div class="listing-row">
+            <div class="listing-thumb"><i class="ti ti-building-skyscraper"></i></div>
+            <div class="listing-info">
+              <div class="listing-addr">56 Leonard St, Unit 12A — Tribeca</div>
+              <div class="listing-meta">2 bd · 2 ba · 1,600 sf · $12,500/mo</div>
+              <div class="listing-stats">
+                <div class="listing-stat"><i class="ti ti-eye"></i> 148 views</div>
+                <div class="listing-stat"><i class="ti ti-message"></i> 5 inquiries</div>
+                <div class="listing-stat"><i class="ti ti-calendar"></i> 2 showings</div>
+              </div>
+            </div>
+            <span class="badge badge-live" style="margin-right:8px;">Live</span>
+          </div>
+          <div class="listing-row">
+            <div class="listing-thumb"><i class="ti ti-building-skyscraper"></i></div>
+            <div class="listing-info">
+              <div class="listing-addr">432 Park South, Unit 38B — Midtown</div>
+              <div class="listing-meta">2 bd · 2 ba · 1,240 sf · $8,500/mo</div>
+              <div class="listing-stats">
+                <div class="listing-stat"><i class="ti ti-eye"></i> 121 views</div>
+                <div class="listing-stat"><i class="ti ti-message"></i> 3 inquiries</div>
+                <div class="listing-stat"><i class="ti ti-calendar"></i> 2 showings</div>
+              </div>
+            </div>
+            <span class="badge badge-live" style="margin-right:8px;">Live</span>
+          </div>
+          <div class="listing-row">
+            <div class="listing-thumb"><i class="ti ti-building-skyscraper"></i></div>
+            <div class="listing-info">
+              <div class="listing-addr">80 Riverside Blvd, Unit 9C — UWS</div>
+              <div class="listing-meta">1 bd · 1 ba · 820 sf · $5,900/mo</div>
+              <div class="listing-stats">
+                <div class="listing-stat"><i class="ti ti-eye"></i> 43 views</div>
+                <div class="listing-stat"><i class="ti ti-clock"></i> Submitted 1 day ago</div>
+              </div>
+            </div>
+            <span class="badge badge-review" style="margin-right:8px;">In review</span>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Recent inquiries</div><div class="section-link" onclick="showPage('inquiries',null)">View all →</div></div>
+          <div class="inquiry-row">
+            <div class="inq-av">AC</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">Alexandra Chen</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">56 Leonard St, Unit 12A</div>
+              <div class="inq-preview">Hi Robert, I'm very interested in the Tribeca unit — could we schedule a showing?</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">2h ago</div><div class="unread-dot"></div></div>
+          </div>
+          <div class="inquiry-row">
+            <div class="inq-av">DW</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">David Walsh</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">432 Park South, Unit 38B</div>
+              <div class="inq-preview">Is the Park South unit still available for a June 1 move-in?</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">Yesterday</div><div class="unread-dot"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Listings -->
+      <div id="page-listings" class="page-section">
+        <div class="page-title">My listings</div>
+        <div class="page-subtitle">Manage, edit, and track all your Harper properties.</div>
+        <div class="section-block">
+          <div class="listing-row">
+            <div class="listing-thumb"><i class="ti ti-building-skyscraper"></i></div>
+            <div class="listing-info">
+              <div class="listing-addr">56 Leonard St, Unit 12A — Tribeca</div>
+              <div class="listing-meta">2 bd · 2 ba · 1,600 sf · $12,500/mo · Available Jun 1</div>
+              <div class="listing-stats">
+                <div class="listing-stat"><i class="ti ti-eye"></i> 148 views</div>
+                <div class="listing-stat"><i class="ti ti-message"></i> 5 inquiries</div>
+                <div class="listing-stat"><i class="ti ti-calendar"></i> 2 showings</div>
+                <div class="listing-stat"><i class="ti ti-heart"></i> 31 saves</div>
+              </div>
+            </div>
+            <span class="badge badge-live" style="margin-right:8px;">Live</span>
+            <div class="listing-actions"><button class="action-btn">Edit</button><button class="action-btn">Pause</button></div>
+          </div>
+          <div class="listing-row">
+            <div class="listing-thumb"><i class="ti ti-building-skyscraper"></i></div>
+            <div class="listing-info">
+              <div class="listing-addr">432 Park South, Unit 38B — Midtown</div>
+              <div class="listing-meta">2 bd · 2 ba · 1,240 sf · $8,500/mo · Available Jun 15</div>
+              <div class="listing-stats">
+                <div class="listing-stat"><i class="ti ti-eye"></i> 121 views</div>
+                <div class="listing-stat"><i class="ti ti-message"></i> 3 inquiries</div>
+                <div class="listing-stat"><i class="ti ti-calendar"></i> 2 showings</div>
+                <div class="listing-stat"><i class="ti ti-heart"></i> 19 saves</div>
+              </div>
+            </div>
+            <span class="badge badge-live" style="margin-right:8px;">Live</span>
+            <div class="listing-actions"><button class="action-btn">Edit</button><button class="action-btn">Pause</button></div>
+          </div>
+          <div class="listing-row">
+            <div class="listing-thumb"><i class="ti ti-building-skyscraper"></i></div>
+            <div class="listing-info">
+              <div class="listing-addr">80 Riverside Blvd, Unit 9C — UWS</div>
+              <div class="listing-meta">1 bd · 1 ba · 820 sf · $5,900/mo · Available Jul 1</div>
+              <div class="listing-stats">
+                <div class="listing-stat"><i class="ti ti-eye"></i> 43 views</div>
+                <div class="listing-stat"><i class="ti ti-clock"></i> Submitted 1 day ago</div>
+              </div>
+            </div>
+            <span class="badge badge-review" style="margin-right:8px;">In review</span>
+            <div class="listing-actions"><button class="action-btn">Edit</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inquiries -->
+      <div id="page-inquiries" class="page-section">
+        <div class="page-title">Inquiries</div>
+        <div class="page-subtitle">Every renter who reaches out is income-verified by Harper.</div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">All inquiries</div><div style="font-size:0.75rem; color:var(--gray-light);">8 total · 5 unread</div></div>
+          <div class="inquiry-row">
+            <div class="inq-av">AC</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">Alexandra Chen</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">56 Leonard St, Unit 12A</div>
+              <div class="inq-preview">Hi Robert, I'm very interested in the Tribeca unit — could we schedule a showing this week?</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">2h ago</div><div class="unread-dot"></div></div>
+          </div>
+          <div class="inquiry-row">
+            <div class="inq-av">DW</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">David Walsh</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">432 Park South, Unit 38B</div>
+              <div class="inq-preview">Is the Park South unit still available for a June 1 move-in?</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">Yesterday</div><div class="unread-dot"></div></div>
+          </div>
+          <div class="inquiry-row">
+            <div class="inq-av">ML</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">Maya Lin</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">56 Leonard St, Unit 12A</div>
+              <div class="inq-preview">Would you consider an 18-month lease? We're relocating from London in July.</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">May 20</div><div class="unread-dot"></div></div>
+          </div>
+          <div class="inquiry-row">
+            <div class="inq-av">JP</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">James Park</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">432 Park South, Unit 38B</div>
+              <div class="inq-preview">Hi, are pets allowed? We have a small dog.</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">May 19</div></div>
+          </div>
+          <div class="inquiry-row">
+            <div class="inq-av">SR</div>
+            <div class="inq-info">
+              <div class="inq-top"><span class="inq-name">Sophie Reed</span><span class="badge badge-gold" style="font-size:0.6rem; padding:2px 6px;"><i class="ti ti-shield-check" style="font-size:0.6rem;"></i> Verified</span></div>
+              <div class="inq-addr">56 Leonard St, Unit 12A</div>
+              <div class="inq-preview">Is parking available in the building? And is the terrace private?</div>
+            </div>
+            <div class="inq-right"><div class="inq-time">May 18</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Showings -->
+      <div id="page-showings" class="page-section">
+        <div class="page-title">Showings</div>
+        <div class="page-subtitle">Upcoming tours with verified Harper members.</div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Upcoming</div></div>
+          <div class="showing-row">
+            <div class="showing-date"><div class="showing-month">Jun</div><div class="showing-day">3</div></div>
+            <div class="showing-info">
+              <div class="showing-addr">56 Leonard St, Unit 12A — Tribeca</div>
+              <div class="showing-meta">Tuesday · 10:00 AM</div>
+              <div class="showing-renter"><i class="ti ti-user" style="font-size:0.7rem; vertical-align:-1px; margin-right:3px;"></i>Alexandra Chen · Verified member</div>
+            </div>
+            <span class="badge badge-confirmed">Confirmed</span>
+          </div>
+          <div class="showing-row">
+            <div class="showing-date"><div class="showing-month">Jun</div><div class="showing-day">5</div></div>
+            <div class="showing-info">
+              <div class="showing-addr">56 Leonard St, Unit 12A — Tribeca</div>
+              <div class="showing-meta">Thursday · 3:00 PM</div>
+              <div class="showing-renter"><i class="ti ti-user" style="font-size:0.7rem; vertical-align:-1px; margin-right:3px;"></i>Maya Lin · Verified member</div>
+            </div>
+            <span class="badge badge-confirmed">Confirmed</span>
+          </div>
+          <div class="showing-row">
+            <div class="showing-date"><div class="showing-month">Jun</div><div class="showing-day">7</div></div>
+            <div class="showing-info">
+              <div class="showing-addr">432 Park South, Unit 38B — Midtown</div>
+              <div class="showing-meta">Saturday · 2:00 PM</div>
+              <div class="showing-renter"><i class="ti ti-user" style="font-size:0.7rem; vertical-align:-1px; margin-right:3px;"></i>David Walsh · Verified member</div>
+            </div>
+            <span class="badge badge-pending">Awaiting confirm</span>
+          </div>
+          <div class="showing-row">
+            <div class="showing-date"><div class="showing-month">Jun</div><div class="showing-day">9</div></div>
+            <div class="showing-info">
+              <div class="showing-addr">432 Park South, Unit 38B — Midtown</div>
+              <div class="showing-meta">Monday · 11:00 AM</div>
+              <div class="showing-renter"><i class="ti ti-user" style="font-size:0.7rem; vertical-align:-1px; margin-right:3px;"></i>James Park · Verified member</div>
+            </div>
+            <span class="badge badge-pending">Awaiting confirm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div id="page-analytics" class="page-section">
+        <div class="page-title">Analytics</div>
+        <div class="page-subtitle">How your listings are performing across Harper's member base.</div>
+        <div class="analytics-grid">
+          <div class="analytics-card"><div class="analytics-label">Total views (30 days)</div><div class="analytics-val">312</div><div class="analytics-up">↑ 18% vs prior period</div></div>
+          <div class="analytics-card"><div class="analytics-label">Saves to inquiry rate</div><div class="analytics-val">16%</div><div class="analytics-sub">Platform avg: 11%</div></div>
+          <div class="analytics-card"><div class="analytics-label">Avg response time</div><div class="analytics-val">3.2h</div><div class="analytics-sub">Faster = more showings</div></div>
+          <div class="analytics-card"><div class="analytics-label">Showing to inquiry rate</div><div class="analytics-val">62%</div><div class="analytics-up">↑ Strong conversion</div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Views by listing</div></div>
+          <div class="bar-row"><div class="bar-label">56 Leonard St</div><div class="bar-track"><div class="bar-fill" style="width:95%;"></div></div><div class="bar-val">148</div></div>
+          <div class="bar-row"><div class="bar-label">432 Park South</div><div class="bar-track"><div class="bar-fill" style="width:77%;"></div></div><div class="bar-val">121</div></div>
+          <div class="bar-row"><div class="bar-label">80 Riverside Blvd</div><div class="bar-track"><div class="bar-fill" style="width:28%;"></div></div><div class="bar-val">43</div></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Inquiries by neighborhood</div></div>
+          <div class="bar-row"><div class="bar-label">Tribeca</div><div class="bar-track"><div class="bar-fill" style="width:80%;"></div></div><div class="bar-val">5</div></div>
+          <div class="bar-row"><div class="bar-label">Midtown</div><div class="bar-track"><div class="bar-fill" style="width:48%;"></div></div><div class="bar-val">3</div></div>
+          <div class="bar-row"><div class="bar-label">UWS</div><div class="bar-track"><div class="bar-fill" style="width:0%;"></div></div><div class="bar-val">0</div></div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div id="page-settings" class="page-section">
+        <div class="page-title">Settings</div>
+        <div class="page-subtitle">Manage your landlord account and notification preferences.</div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Account details</div></div>
+          <div class="profile-row"><div><div class="profile-field-label">Name</div><div class="profile-field-val">Robert Kim</div></div><span class="edit-link">Edit</span></div>
+          <div class="profile-row"><div><div class="profile-field-label">Email</div><div class="profile-field-val">robert@example.com</div></div><span class="edit-link">Edit</span></div>
+          <div class="profile-row"><div><div class="profile-field-label">Phone</div><div class="profile-field-val">+1 (212) 555-0138</div></div><span class="edit-link">Edit</span></div>
+        </div>
+        <div class="section-block">
+          <div class="section-header"><div class="section-title">Notifications</div></div>
+          <div class="settings-row"><div><div class="settings-label">New inquiry received</div><div class="settings-sub">Email and SMS</div></div><button class="toggle" onclick="this.classList.toggle('off')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Showing confirmed</div><div class="settings-sub">Email and SMS</div></div><button class="toggle" onclick="this.classList.toggle('off')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Listing approved by Harper</div><div class="settings-sub">Email only</div></div><button class="toggle" onclick="this.classList.toggle('off')"></button></div>
+          <div class="settings-row"><div><div class="settings-label">Weekly performance digest</div><div class="settings-sub">Email only</div></div><button class="toggle off" onclick="this.classList.toggle('off')"></button></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function showPage(id, el) {
+      document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.sidebar-nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      if (el) el.classList.add('active');
+    }
+  </script>
+</body>
+</html>

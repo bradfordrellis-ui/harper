@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Listings — Harper</title>
+  <link rel="stylesheet" href="css/harper.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    body { background: var(--gray-pale); }
+    /* Nav */
+    .browse-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.5rem; border-bottom: var(--border); background: var(--white);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-icons { display: flex; align-items: center; gap: 16px; }
+    .nav-icon-btn { position: relative; font-size: 1.1rem; color: var(--gray-mid); cursor: pointer; }
+    .nav-icon-btn:hover { color: var(--gold); }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--gold-pale); border: 0.5px solid var(--gold-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; font-weight: 500; color: var(--gold-dark); cursor: pointer;
+    }
+    /* Layout */
+    .browse-layout { display: grid; grid-template-columns: 225px minmax(0,1fr); min-height: calc(100vh - 60px); }
+    /* Sidebar */
+    .browse-sidebar {
+      border-right: var(--border); background: var(--white);
+      padding: 1.25rem; overflow-y: auto;
+    }
+    .filter-label {
+      font-size: 0.65rem; letter-spacing: 0.16em; color: var(--gray-light);
+      text-transform: uppercase; margin: 1.25rem 0 8px;
+    }
+    .filter-label:first-child { margin-top: 0; }
+    .range-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .range-header span { font-size: 0.75rem; color: var(--gray-mid); }
+    .range-header strong { font-size: 0.75rem; font-weight: 500; color: var(--black); }
+    input[type=range] { width: 100%; accent-color: var(--gold); margin-bottom: 4px; }
+    .check-item { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .check-item input { accent-color: var(--gold); }
+    .check-item label { font-size: 0.78rem; color: var(--gray-mid); cursor: pointer; }
+    .filter-select { width: 100%; }
+    /* Main */
+    .browse-main { padding: 1.25rem; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .results-count { font-size: 0.82rem; color: var(--gray-mid); }
+    .results-count strong { color: var(--black); font-weight: 500; }
+    .controls { display: flex; align-items: center; gap: 10px; }
+    .sort-select { font-size: 0.78rem; padding: 6px 10px; }
+    .active-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+    .active-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; background: var(--gold-pale);
+      border: 0.5px solid var(--gold-border); border-radius: 20px;
+      font-size: 0.72rem; color: var(--gold-dark);
+    }
+    .active-tag i { font-size: 0.7rem; cursor: pointer; }
+    .map-prompt {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px; background: var(--white); border: var(--border);
+      border-radius: var(--radius-md); margin-bottom: 1rem;
+      font-size: 0.82rem; color: var(--gray-mid); cursor: pointer;
+    }
+    .map-prompt:hover { border-color: var(--gold); color: var(--gold); }
+    /* Listing grid */
+    .listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+    .listing-card {
+      background: var(--white); border: var(--border);
+      border-radius: var(--radius-lg); overflow: hidden; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .listing-card:hover { border-color: var(--gold-light); }
+    .listing-card.saved { border-color: var(--gold-light); }
+    .card-img {
+      height: 145px; background: var(--gray-pale);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .card-img i { font-size: 36px; color: var(--gray-light); }
+    .card-img .badge { position: absolute; top: 10px; left: 10px; }
+    .heart-btn {
+      position: absolute; top: 10px; right: 10px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--white); border: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem; color: var(--gray-light); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .heart-btn.saved { color: var(--gold); border-color: var(--gold-light); }
+    .card-body { padding: 0.875rem 1rem; }
+    .card-price { font-family: var(--font-display); font-size: 1.05rem; color: var(--black); }
+    .card-price span { font-family: var(--font-body); font-size: 0.72rem; color: var(--gray-mid); font-weight: 400; }
+    .card-address { font-size: 0.75rem; color: var(--gray-mid); margin: 3px 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-meta { display: flex; gap: 6px; font-size: 0.7rem; color: var(--gray-light); }
+    .card-amenities { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+    .am-tag {
+      font-size: 0.65rem; color: var(--gray-mid);
+      background: var(--gray-pale); border-radius: 4px; padding: 2px 6px;
+    }
+    /* Load more */
+    .load-more { text-align: center; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="browse-nav">
+    <a href="index.html" class="harper-logo">H<span class="a">A</span>RPER</a>
+    <div class="nav-icons">
+      <div class="nav-icon-btn" style="position:relative;">
+        <i class="ti ti-bell"></i>
+        <span class="notif-dot"></span>
+      </div>
+      <div class="nav-icon-btn"><i class="ti ti-heart"></i></div>
+      <a href="renter-dashboard.html" class="user-avatar">AC</a>
+    </div>
+  </nav>
+
+  <div class="browse-layout">
+
+    <!-- Sidebar filters -->
+    <aside class="browse-sidebar">
+      <div class="filter-label">Neighborhoods</div>
+      <div class="pill-group" style="margin-bottom:4px;">
+        <div class="pill active" onclick="this.classList.toggle('active')">All</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Tribeca</div>
+        <div class="pill" onclick="this.classList.toggle('active')">West Village</div>
+        <div class="pill" onclick="this.classList.toggle('active')">SoHo</div>
+        <div class="pill" onclick="this.classList.toggle('active')">UES</div>
+        <div class="pill" onclick="this.classList.toggle('active')">UWS</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Chelsea</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Gramercy</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Williamsburg</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Greenpoint</div>
+        <div class="pill" onclick="this.classList.toggle('active')">DUMBO</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Bk Heights</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Cobble Hill</div>
+      </div>
+
+      <div class="filter-label">Price</div>
+      <div class="range-header"><span>Monthly rent</span><strong id="rent-val">$12,000</strong></div>
+      <input type="range" min="3000" max="50000" step="500" value="12000"
+        oninput="document.getElementById('rent-val').textContent='$'+Number(this.value).toLocaleString()" />
+
+      <div class="filter-label">Bedrooms</div>
+      <div class="pill-group" style="margin-bottom:4px;">
+        <div class="pill active" onclick="this.classList.toggle('active')">Any</div>
+        <div class="pill" onclick="this.classList.toggle('active')">Studio</div>
+        <div class="pill" onclick="this.classList.toggle('active')">1</div>
+        <div class="pill" onclick="this.classList.toggle('active')">2</div>
+        <div class="pill" onclick="this.classList.toggle('active')">3</div>
+        <div class="pill" onclick="this.classList.toggle('active')">4+</div>
+      </div>
+
+      <div class="filter-label">Min sq ft</div>
+      <div class="range-header"><span>Size</span><strong id="sqft-val">800</strong></div>
+      <input type="range" min="300" max="5000" step="100" value="800"
+        oninput="document.getElementById('sqft-val').textContent=Number(this.value).toLocaleString()" />
+
+      <div class="filter-label">Move-in</div>
+      <select class="form-select filter-select">
+        <option>Any time</option>
+        <option>Within 30 days</option>
+        <option>1–3 months</option>
+        <option>3–6 months</option>
+      </select>
+
+      <div class="filter-label">Amenities</div>
+      <div class="check-item"><input type="checkbox" id="c1" checked /><label for="c1">Doorman</label></div>
+      <div class="check-item"><input type="checkbox" id="c2" /><label for="c2">Washer / dryer</label></div>
+      <div class="check-item"><input type="checkbox" id="c3" /><label for="c3">Private outdoor space</label></div>
+      <div class="check-item"><input type="checkbox" id="c4" /><label for="c4">Gym / fitness</label></div>
+      <div class="check-item"><input type="checkbox" id="c5" /><label for="c5">Parking included</label></div>
+      <div class="check-item"><input type="checkbox" id="c6" /><label for="c6">Pet friendly</label></div>
+      <div class="check-item"><input type="checkbox" id="c7" /><label for="c7">Furnished option</label></div>
+      <div class="check-item"><input type="checkbox" id="c8" /><label for="c8">Pool / rooftop</label></div>
+
+      <div class="filter-label">Building type</div>
+      <div class="check-item"><input type="checkbox" id="b1" checked /><label for="b1">Full-service</label></div>
+      <div class="check-item"><input type="checkbox" id="b2" /><label for="b2">Penthouse</label></div>
+      <div class="check-item"><input type="checkbox" id="b3" /><label for="b3">Townhouse / brownstone</label></div>
+      <div class="check-item"><input type="checkbox" id="b4" /><label for="b4">Loft / conversion</label></div>
+
+      <button class="btn btn-ghost btn-full" style="margin-top:1.25rem; font-size:0.72rem;">Reset all filters</button>
+    </aside>
+
+    <!-- Main listings -->
+    <main class="browse-main">
+      <div class="top-bar">
+        <div class="results-count"><strong>147</strong> verified listings</div>
+        <div class="controls">
+          <select class="form-select sort-select">
+            <option>Newest first</option>
+            <option>Price: low to high</option>
+            <option>Price: high to low</option>
+            <option>Sq ft: largest</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="active-tags">
+        <div class="active-tag">Doorman <i class="ti ti-x"></i></div>
+        <div class="active-tag">Full-service <i class="ti ti-x"></i></div>
+        <div class="active-tag">Under $12,000 <i class="ti ti-x"></i></div>
+      </div>
+
+      <div class="map-prompt">
+        <i class="ti ti-map-pin"></i> View listings on map
+      </div>
+
+      <div class="listings-grid">
+        <!-- Card 1 -->
+        <div class="listing-card saved" onclick="window.location='listing-detail.html'">
+          <div class="card-img">
+            <span class="badge badge-new">New</span>
+            <div class="heart-btn saved" onclick="event.stopPropagation(); this.classList.toggle('saved')"><i class="ti ti-heart"></i></div>
+            <i class="ti ti-building-skyscraper"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-price">$8,500 <span>/mo</span></div>
+            <div class="card-address">432 Park South · Midtown</div>
+            <div class="card-meta"><span>2 bd</span><span>·</span><span>2 ba</span><span>·</span><span>1,240 sf</span></div>
+            <div class="card-amenities"><span class="am-tag">Doorman</span><span class="am-tag">Gym</span><span class="am-tag">Terrace</span></div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="listing-card" onclick="window.location='listing-detail.html'">
+          <div class="card-img">
+            <span class="badge badge-penthouse">Penthouse</span>
+            <div class="heart-btn" onclick="event.stopPropagation(); this.classList.toggle('saved')"><i class="ti ti-heart"></i></div>
+            <i class="ti ti-building-skyscraper"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-price">$22,000 <span>/mo</span></div>
+            <div class="card-address">1 Seaport Residences · FiDi</div>
+            <div class="card-meta"><span>3 bd</span><span>·</span><span>3 ba</span><span>·</span><span>2,800 sf</span></div>
+            <div class="card-amenities"><span class="am-tag">Doorman</span><span class="am-tag">Pool</span><span class="am-tag">Views</span></div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="listing-card" onclick="window.location='listing-detail.html'">
+          <div class="card-img">
+            <div class="heart-btn" onclick="event.stopPropagation(); this.classList.toggle('saved')"><i class="ti ti-heart"></i></div>
+            <i class="ti ti-building-skyscraper"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-price">$5,900 <span>/mo</span></div>
+            <div class="card-address">80 Riverside Blvd · UWS</div>
+            <div class="card-meta"><span>1 bd</span><span>·</span><span>1 ba</span><span>·</span><span>820 sf</span></div>
+            <div class="card-amenities"><span class="am-tag">Doorman</span><span class="am-tag">W/D</span></div>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="listing-card" onclick="window.location='listing-detail.html'">
+          <div class="card-img">
+            <span class="badge badge-exclusive">Exclusive</span>
+            <div class="heart-btn" onclick="event.stopPropagation(); this.classList.toggle('saved')"><i class="ti ti-heart"></i></div>
+            <i class="ti ti-building-skyscraper"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-price">$12,500 <span>/mo</span></div>
+            <div class="card-address">56 Leonard St · Tribeca</div>
+            <div class="card-meta"><span>2 bd</span><span>·</span><span>2 ba</span><span>·</span><span>1,600 sf</span></div>
+            <div class="card-amenities"><span class="am-tag">Doorman</span><span class="am-tag">Gym</span><span class="am-tag">Pet ok</span></div>
+          </div>
+        </div>
+        <!-- Card 5 -->
+        <div class="listing-card" onclick="window.location='listing-detail.html'">
+          <div class="card-img">
+            <div class="heart-btn" onclick="event.stopPropagation(); this.classList.toggle('saved')"><i class="ti ti-heart"></i></div>
+            <i class="ti ti-building-skyscraper"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-price">$7,200 <span>/mo</span></div>
+            <div class="card-address">100 Boerum Pl · Bk Heights</div>
+            <div class="card-meta"><span>2 bd</span><span>·</span><span>1 ba</span><span>·</span><span>1,050 sf</span></div>
+            <div class="card-amenities"><span class="am-tag">Doorman</span><span class="am-tag">Terrace</span></div>
+          </div>
+        </div>
+        <!-- Card 6 -->
+        <div class="listing-card" onclick="window.location='listing-detail.html'">
+          <div class="card-img">
+            <span class="badge badge-new">New</span>
+            <div class="heart-btn" onclick="event.stopPropagation(); this.classList.toggle('saved')"><i class="ti ti-heart"></i></div>
+            <i class="ti ti-building-skyscraper"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-price">$9,800 <span>/mo</span></div>
+            <div class="card-address">1 Hotel Williamsburg · Wburg</div>
+            <div class="card-meta"><span>2 bd</span><span>·</span><span>2 ba</span><span>·</span><span>1,380 sf</span></div>
+            <div class="card-amenities"><span class="am-tag">Gym</span><span class="am-tag">Pool</span><span class="am-tag">Views</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="load-more">
+        <button class="btn btn-outline">Load more listings</button>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

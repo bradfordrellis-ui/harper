@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Access — Harper</title>
+  <link rel="stylesheet" href="css/harper.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    body { background: var(--gray-pale); }
+    .apply-shell {
+      min-height: 100vh;
+      padding: 2.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .apply-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.18em;
+      color: var(--black);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .apply-logo .o { color: var(--gold); }
+    .apply-card {
+      background: var(--white);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      padding: 2.25rem 2.5rem;
+    }
+    .step-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+    .step-sub {
+      font-size: 0.82rem;
+      color: var(--gray-mid);
+      margin-bottom: 1.75rem;
+      line-height: 1.7;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 1.25rem;
+    }
+    .checkbox-row input { accent-color: var(--gold); margin-top: 3px; flex-shrink: 0; }
+    .checkbox-row label { font-size: 0.75rem; color: var(--gray-mid); line-height: 1.6; }
+    .btn-row { display: flex; gap: 10px; margin-top: 1.75rem; }
+    .btn-row .btn-ghost { flex: 1; }
+    .btn-row .btn-gold { flex: 2; }
+    .form-note {
+      font-size: 0.68rem;
+      color: var(--gray-light);
+      text-align: center;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+    .form-note a { color: var(--gold); }
+    /* Success */
+    .success-view { text-align: center; padding: 1rem 0; }
+    .success-icon {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      border: 0.5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .success-icon i { font-size: 1.4rem; color: var(--gold); }
+    .success-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; margin-bottom: 8px; }
+    .success-sub { font-size: 0.85rem; color: var(--gray-mid); line-height: 1.75; max-width: 340px; margin: 0 auto 1.25rem; }
+    .success-ref { font-size: 0.68rem; color: var(--gray-light); letter-spacing: 0.1em; text-transform: uppercase; }
+    .what-next { margin-top: 1.5rem; text-align: left; border-top: var(--border); padding-top: 1.25rem; }
+    .what-next-label { font-size: 0.65rem; letter-spacing: 0.14em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 10px; }
+    .next-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+    .next-num {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 0.5px solid var(--gold);
+      font-size: 0.68rem;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .next-text { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.6; }
+    /* Step hidden */
+    .step { display: none; }
+    .step.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="apply-shell">
+    <a href="index.html" class="apply-logo">H<span class="a">A</span>RPER</a>
+
+    <div class="apply-card">
+      <!-- Progress dots -->
+      <div class="step-dots" id="dots">
+        <div class="step-dot active" id="d1"></div>
+        <div class="step-dot" id="d2"></div>
+        <div class="step-dot" id="d3"></div>
+        <div class="step-dot" id="d4"></div>
+      </div>
+
+      <!-- Step 1: Personal info -->
+      <div class="step active" id="step1">
+        <div class="step-eyebrow">Step 1 of 4</div>
+        <div class="step-title">Who are you?</div>
+        <div class="step-sub">Tell us a little about yourself. All information is kept strictly private.</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First name</label>
+            <input class="form-input" type="text" placeholder="Alexandra" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last name</label>
+            <input class="form-input" type="text" placeholder="Chen" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" placeholder="alexandra@example.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone number</label>
+          <input class="form-input" type="tel" placeholder="+1 (212) 000-0000" />
+        </div>
+        <button class="btn btn-gold btn-full" onclick="goTo(2)">Continue →</button>
+        <p class="form-note">We will never share your information with third parties.</p>
+      </div>
+
+      <!-- Step 2: Search preferences -->
+      <div class="step" id="step2">
+        <div class="step-eyebrow">Step 2 of 4</div>
+        <div class="step-title">Your search</div>
+        <div class="step-sub">Help us match you with the right listings from day one.</div>
+        <div class="form-group">
+          <label class="form-label">Preferred neighborhoods</label>
+          <div class="pill-group">
+            <div class="pill" onclick="this.classList.toggle('active')">Upper East Side</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Upper West Side</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Midtown</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Tribeca</div>
+            <div class="pill" onclick="this.classList.toggle('active')">SoHo</div>
+            <div class="pill" onclick="this.classList.toggle('active')">West Village</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Chelsea</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Gramercy</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Williamsburg</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Greenpoint</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Brooklyn Heights</div>
+            <div class="pill" onclick="this.classList.toggle('active')">Cobble Hill</div>
+            <div class="pill" onclick="this.classList.toggle('active')">DUMBO</div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:1.25rem;">
+          <label class="form-label">Bedrooms</label>
+          <select class="form-select">
+            <option>Studio</option>
+            <option>1 bedroom</option>
+            <option selected>2 bedrooms</option>
+            <option>3 bedrooms</option>
+            <option>4+ bedrooms</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Move-in timeline</label>
+          <select class="form-select">
+            <option>Within 30 days</option>
+            <option>1–3 months</option>
+            <option>3–6 months</option>
+            <option>Just exploring</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+          <button class="btn btn-gold" onclick="goTo(3)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Income verification -->
+      <div class="step" id="step3">
+        <div class="step-eyebrow">Step 3 of 4</div>
+        <div class="step-title">Income verification</div>
+        <div class="step-sub">Harper is reserved for qualified renters. Your information is encrypted and never shared with third parties.</div>
+        <div class="form-group">
+          <label class="form-label">Employment status</label>
+          <select class="form-select">
+            <option>Employed full-time</option>
+            <option>Self-employed / founder</option>
+            <option>Executive / C-suite</option>
+            <option>Finance / investment</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Annual income</label>
+          <select class="form-select">
+            <option>Prefer not to say</option>
+            <option>$150,000 – $250,000</option>
+            <option>$250,000 – $500,000</option>
+            <option>$500,000 – $1,000,000</option>
+            <option>$1,000,000+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Verification method</label>
+          <select class="form-select">
+            <option>Upload most recent tax return (W-2 or 1040)</option>
+            <option>Connect payroll provider (Gusto, ADP, etc.)</option>
+            <option>Provide CPA / accountant letter</option>
+            <option>Bank statement (last 3 months)</option>
+          </select>
+        </div>
+        <hr class="divider" />
+        <div class="checkbox-row">
+          <input type="checkbox" id="consent" checked />
+          <label for="consent">I consent to Harper securely verifying my income details. I understand this information is encrypted and used solely to confirm platform eligibility.</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+          <button class="btn btn-gold" onclick="goTo(4)">Continue →</button>
+        </div>
+        <p class="form-note">256-bit encryption · SOC 2 compliant · Never sold or shared</p>
+      </div>
+
+      <!-- Step 4: Final details -->
+      <div class="step" id="step4">
+        <div class="step-eyebrow">Step 4 of 4</div>
+        <div class="step-title">Final details</div>
+        <div class="step-sub">Almost there. One last step before we review your application.</div>
+        <div class="form-group">
+          <label class="form-label">How did you hear about Harper?</label>
+          <select class="form-select">
+            <option>Friend or colleague</option>
+            <option>LinkedIn</option>
+            <option>Instagram</option>
+            <option>Google search</option>
+            <option>My broker referred me</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Referral code (optional)</label>
+          <input class="form-input" type="text" placeholder="e.g. HARPER-XXXX" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Anything else we should know?</label>
+          <input class="form-input" type="text" placeholder="e.g. I'm relocating from London in March…" />
+        </div>
+        <hr class="divider" />
+        <div class="checkbox-row">
+          <input type="checkbox" id="terms" checked />
+          <label for="terms">I agree to Harper's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, and confirm that all information provided is accurate.</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
+          <button class="btn btn-gold" onclick="goTo(5)">Submit application</button>
+        </div>
+      </div>
+
+      <!-- Step 5: Confirmation -->
+      <div class="step" id="step5">
+        <div class="success-view">
+          <div class="success-icon"><i class="ti ti-check"></i></div>
+          <div class="success-title">Application received</div>
+          <div class="success-sub">Thank you for applying to Harper. Our team reviews each application personally. You'll hear from us within 2 business days.</div>
+          <div class="success-ref">Application #LRN-2026-04817</div>
+          <div class="what-next">
+            <div class="what-next-label">What happens next</div>
+            <div class="next-item"><div class="next-num">1</div><div class="next-text">Our team reviews your application personally within 2 business days</div></div>
+            <div class="next-item"><div class="next-num">2</div><div class="next-text">You'll receive a curated preview of listings matching your search</div></div>
+            <div class="next-item"><div class="next-num">3</div><div class="next-text">Once approved, you gain full access to all Harper listings</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function goTo(n) {
+      // Hide all steps
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      // Update dots (only 4 dots, step 5 is confirmation)
+      for (let i = 1; i <= 4; i++) {
+        const d = document.getElementById('d' + i);
+        if (!d) continue;
+        d.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+      }
+      // Hide dots on confirmation
+      document.getElementById('dots').style.display = n === 5 ? 'none' : 'flex';
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>

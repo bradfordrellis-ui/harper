@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harper — Exclusive NYC Rentals</title>
+  <link rel="stylesheet" href="css/harper.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    /* Page-specific styles */
+    .hero {
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      background: var(--white);
+    }
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 400;
+      color: var(--black);
+      line-height: 1.15;
+      max-width: 640px;
+      margin: 0 auto 1rem;
+    }
+    .hero-sub {
+      font-size: 0.9rem;
+      color: var(--gray-mid);
+      max-width: 420px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+    }
+    .search-bar {
+      display: flex;
+      max-width: 600px;
+      margin: 0 auto;
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--white);
+    }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      padding: 14px 18px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--black);
+      outline: none;
+    }
+    .search-bar input::placeholder { color: var(--gray-light); }
+    .search-bar select {
+      border: none;
+      border-left: var(--border);
+      padding: 14px 12px;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--gray-mid);
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+    }
+    .search-bar button {
+      padding: 14px 26px;
+      background: var(--gold);
+      color: var(--white);
+      border: none;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-bar button:hover { background: var(--gold-dark); }
+    .trust-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--gray-light);
+      letter-spacing: 0.04em;
+    }
+    .trust-item i { font-size: 14px; color: var(--gold-light); }
+
+    /* Listings section */
+    .listings-section {
+      padding: 3rem 2rem;
+      background: var(--gray-pale);
+    }
+    .listings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+    .listings-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+    }
+    .listings-header a {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .listing-card {
+      background: var(--white);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .listing-card:hover { border-color: var(--gold-light); }
+    .card-img {
+      height: 145px;
+      background: var(--gray-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .card-img i { font-size: 38px; color: var(--gray-light); }
+    .card-img .badge { position: absolute; top: 10px; left: 10px; }
+    .card-body { padding: 1rem; }
+    .card-price { font-family: var(--font-display); font-size: 1.1rem; color: var(--black); }
+    .card-price span { font-family: var(--font-body); font-size: 0.72rem; color: var(--gray-mid); font-weight: 400; }
+    .card-address { font-size: 0.78rem; color: var(--gray-mid); margin: 3px 0 8px; }
+    .card-meta { display: flex; gap: 8px; font-size: 0.7rem; color: var(--gray-light); }
+    .card-dot { color: var(--gray-light); }
+
+    /* Landlord banner */
+    .landlord-banner {
+      margin: 0 2rem 3rem;
+      padding: 1.75rem 2rem;
+      background: var(--white);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .landlord-banner h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 400; margin-bottom: 4px; }
+    .landlord-banner p { font-size: 0.82rem; }
+
+    /* Footer */
+    .harper-footer {
+      padding: 1.5rem 2rem;
+      border-top: var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.72rem; color: var(--gray-light); letter-spacing: 0.04em; }
+    .footer-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="harper-nav">
+    <a href="index.html" class="harper-logo">H<span class="a">A</span>RPER</a>
+    <div class="nav-links">
+      <a href="browse.html" class="nav-link">Listings</a>
+      <a href="landlord-listing.html" class="nav-link">For landlords</a>
+      <span class="nav-link">How it works</span>
+      <a href="apply.html" class="btn btn-outline btn-sm">Apply for access</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Members only &nbsp;·&nbsp; New York City</div>
+    <h1 class="hero-title">The city's finest apartments, for those who qualify</h1>
+    <p class="hero-sub">Harper is an exclusive rental platform. Every renter is income-verified. Every listing is curated.</p>
+    <div class="search-bar">
+      <input type="text" placeholder="Search by neighborhood, address, or building…" />
+      <select>
+        <option>Any beds</option>
+        <option>Studio</option>
+        <option>1 bed</option>
+        <option>2 beds</option>
+        <option>3+ beds</option>
+      </select>
+      <button>Search</button>
+    </div>
+    <div class="trust-row">
+      <div class="trust-item"><i class="ti ti-shield-check"></i> Income-verified renters</div>
+      <div class="trust-item"><i class="ti ti-building"></i> Curated NYC listings</div>
+      <div class="trust-item"><i class="ti ti-lock"></i> Private &amp; exclusive</div>
+    </div>
+  </section>
+
+  <!-- Featured Listings -->
+  <section class="listings-section">
+    <div class="listings-header">
+      <h2>Featured listings</h2>
+      <a href="browse.html" class="text-gold">View all →</a>
+    </div>
+    <div class="listings-grid">
+      <div class="listing-card" onclick="window.location='listing-detail.html'">
+        <div class="card-img">
+          <span class="badge badge-new">New</span>
+          <i class="ti ti-building-skyscraper"></i>
+        </div>
+        <div class="card-body">
+          <div class="card-price">$8,500 <span>/mo</span></div>
+          <div class="card-address">432 Park South · Midtown</div>
+          <div class="card-meta"><span>2 bd</span><span class="card-dot">·</span><span>2 ba</span><span class="card-dot">·</span><span>1,240 sf</span></div>
+        </div>
+      </div>
+      <div class="listing-card" onclick="window.location='listing-detail.html'">
+        <div class="card-img">
+          <span class="badge badge-penthouse">Penthouse</span>
+          <i class="ti ti-building-skyscraper"></i>
+        </div>
+        <div class="card-body">
+          <div class="card-price">$22,000 <span>/mo</span></div>
+          <div class="card-address">1 Seaport Residences · FiDi</div>
+          <div class="card-meta"><span>3 bd</span><span class="card-dot">·</span><span>3 ba</span><span class="card-dot">·</span><span>2,800 sf</span></div>
+        </div>
+      </div>
+      <div class="listing-card" onclick="window.location='listing-detail.html'">
+        <div class="card-img">
+          <span class="badge badge-exclusive">Exclusive</span>
+          <i class="ti ti-building-skyscraper"></i>
+        </div>
+        <div class="card-body">
+          <div class="card-price">$12,500 <span>/mo</span></div>
+          <div class="card-address">56 Leonard St · Tribeca</div>
+          <div class="card-meta"><span>2 bd</span><span class="card-dot">·</span><span>2 ba</span><span class="card-dot">·</span><span>1,600 sf</span></div>
+        </div>
+      </div>
+      <div class="listing-card" onclick="window.location='listing-detail.html'">
+        <div class="card-img">
+          <i class="ti ti-building-skyscraper"></i>
+        </div>
+        <div class="card-body">
+          <div class="card-price">$5,900 <span>/mo</span></div>
+          <div class="card-address">80 Riverside Blvd · UWS</div>
+          <div class="card-meta"><span>1 bd</span><span class="card-dot">·</span><span>1 ba</span><span class="card-dot">·</span><span>820 sf</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Landlord Banner -->
+  <div class="landlord-banner">
+    <div>
+      <h3><i class="ti ti-crown" style="font-size:1rem; color:var(--gold); vertical-align:-1px; margin-right:6px;"></i>Are you a landlord or property manager?</h3>
+      <p>List on Harper and reach only pre-qualified, income-verified renters. No wasted showings.</p>
+    </div>
+    <a href="landlord-listing.html" class="btn btn-outline">List your property</a>
+  </div>
+
+  <!-- Footer -->
+  <footer class="harper-footer">
+    <div class="harper-logo" style="font-size:1rem; color:var(--gray-light);">H<span class="a">A</span>RPER</div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+      <a href="#">NYC Fair Housing</a>
+    </div>
+  </footer>
+
+</body>
+</html>

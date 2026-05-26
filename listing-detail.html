@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>56 Leonard St, Unit 12A — Harper</title>
+  <link rel="stylesheet" href="css/harper.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    body { background: var(--gray-pale); }
+    .detail-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.5rem; border-bottom: var(--border); background: var(--white);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .back-link { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--gray-mid); cursor: pointer; }
+    .back-link:hover { color: var(--gold); }
+    .nav-sep { color: var(--gray-light); font-size: 0.9rem; }
+    .nav-actions { display: flex; align-items: center; gap: 14px; }
+    .nav-action { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--gray-mid); cursor: pointer; letter-spacing: 0.04em; }
+    .nav-action:hover { color: var(--gold); }
+    .nav-action.saved { color: var(--gold); }
+    /* Photo grid */
+    .photo-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3px; height: 340px;
+    }
+    .photo-main {
+      background: var(--gray-pale); display: flex;
+      align-items: center; justify-content: center; border-right: 3px solid var(--gray-pale);
+    }
+    .photo-main i { font-size: 50px; color: var(--gray-light); }
+    .photo-side { display: grid; grid-template-rows: 1fr 1fr; gap: 3px; }
+    .photo-thumb {
+      background: var(--gray-pale); display: flex;
+      align-items: center; justify-content: center; position: relative;
+    }
+    .photo-thumb i { font-size: 30px; color: var(--gray-light); }
+    .photo-count-btn {
+      position: absolute; bottom: 12px; right: 12px;
+      background: var(--white); border: var(--border);
+      border-radius: var(--radius-md); padding: 5px 12px;
+      font-size: 0.72rem; color: var(--gray-mid); cursor: pointer;
+    }
+    .photo-count-btn:hover { border-color: var(--gold); color: var(--gold); }
+    /* Body */
+    .detail-body {
+      display: grid; grid-template-columns: minmax(0,1fr) 290px;
+      gap: 1.5rem; padding: 1.5rem; max-width: 1200px; margin: 0 auto;
+    }
+    /* Left column */
+    .listing-eyebrow { font-size: 0.65rem; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+    .listing-title { font-family: var(--font-display); font-size: 1.75rem; font-weight: 400; margin-bottom: 4px; }
+    .listing-sub { font-size: 0.82rem; color: var(--gray-mid); margin-bottom: 1.25rem; }
+    /* Stats row */
+    .stats-row {
+      display: flex; border: var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      background: var(--white); margin-bottom: 1.25rem;
+    }
+    .stat-cell {
+      flex: 1; padding: 12px 14px;
+      border-right: var(--border);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-label { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 4px; }
+    .stat-val { font-family: var(--font-display); font-size: 1.1rem; color: var(--black); }
+    .stat-val span { font-family: var(--font-body); font-size: 0.72rem; color: var(--gray-light); }
+    /* Tabs */
+    .tab-nav { display: flex; border-bottom: var(--border); margin-bottom: 1rem; }
+    .tab-btn {
+      padding: 8px 16px; font-size: 0.78rem; color: var(--gray-mid);
+      cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: all 0.15s; font-family: var(--font-body);
+      background: none; border-top: none; border-left: none; border-right: none;
+    }
+    .tab-btn:hover { color: var(--gold); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .desc-text { font-size: 0.85rem; color: var(--gray-mid); line-height: 1.85; }
+    .read-more-link { font-size: 0.75rem; color: var(--gold); cursor: pointer; margin-top: 8px; display: inline-block; }
+    /* Amenities */
+    .amenity-subhead { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 8px; margin-top: 1rem; }
+    .amenity-subhead:first-child { margin-top: 0; }
+    .amenity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .amenity-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--gray-mid); }
+    .amenity-item i { font-size: 0.9rem; color: var(--gold); }
+    /* Details grid */
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .detail-cell {}
+    .detail-cell .label { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 3px; }
+    .detail-cell .value { font-size: 0.82rem; color: var(--black); }
+    /* Nearby */
+    .map-box {
+      height: 150px; background: var(--gray-pale); border: var(--border);
+      border-radius: var(--radius-md); display: flex; align-items: center;
+      justify-content: center; margin-top: 1rem; cursor: pointer;
+      flex-direction: column; gap: 6px;
+    }
+    .map-box i { font-size: 1.4rem; color: var(--gray-light); }
+    .map-box span { font-size: 0.78rem; color: var(--gray-mid); }
+    .nearby-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: var(--border); font-size: 0.8rem;
+    }
+    .nearby-item:last-child { border-bottom: none; }
+    .nearby-name { color: var(--gray-mid); }
+    .nearby-dist { color: var(--gray-light); }
+    /* Right column - contact card */
+    .contact-card {
+      background: var(--white); border: var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      position: sticky; top: 80px; align-self: flex-start;
+    }
+    .contact-price { font-family: var(--font-display); font-size: 1.75rem; color: var(--black); }
+    .contact-price span { font-family: var(--font-body); font-size: 0.82rem; color: var(--gray-mid); font-weight: 400; }
+    .avail-row { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gray-mid); margin: 6px 0 1.25rem; }
+    .avail-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+    .lease-table { width: 100%; margin-bottom: 0; }
+    .lease-table tr td { padding: 5px 0; font-size: 0.75rem; }
+    .lease-table tr td:first-child { color: var(--gray-light); }
+    .lease-table tr td:last-child { text-align: right; font-weight: 500; color: var(--black); }
+    .landlord-row { display: flex; align-items: center; gap: 10px; margin-top: 1rem; }
+    .landlord-av {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--gold-pale); border: 0.5px solid var(--gold-light);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 0.9rem; color: var(--gold-dark); flex-shrink: 0;
+    }
+    .landlord-name { font-size: 0.82rem; font-weight: 500; color: var(--black); }
+    .landlord-sub { font-size: 0.7rem; color: var(--gray-light); }
+    .share-row { display: flex; gap: 8px; margin-top: 1rem; }
+    .share-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 8px; border: var(--border); border-radius: var(--radius-md);
+      font-size: 0.68rem; color: var(--gray-light); cursor: pointer; background: none;
+      font-family: var(--font-body); transition: all 0.15s;
+    }
+    .share-btn:hover { border-color: var(--gold); color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="detail-nav">
+    <div class="nav-left">
+      <a href="browse.html" class="back-link"><i class="ti ti-arrow-left"></i> Browse</a>
+      <span class="nav-sep">·</span>
+      <a href="index.html" class="harper-logo" style="font-size:1rem;">H<span class="a">A</span>RPER</a>
+    </div>
+    <div class="nav-actions">
+      <div class="nav-action saved"><i class="ti ti-heart"></i> Saved</div>
+      <div class="nav-action"><i class="ti ti-share"></i> Share</div>
+    </div>
+  </nav>
+
+  <!-- Photo grid -->
+  <div class="photo-grid">
+    <div class="photo-main"><i class="ti ti-building-skyscraper"></i></div>
+    <div class="photo-side">
+      <div class="photo-thumb"><i class="ti ti-sofa"></i></div>
+      <div class="photo-thumb">
+        <i class="ti ti-bath"></i>
+        <button class="photo-count-btn"><i class="ti ti-photo" style="font-size:0.75rem; vertical-align:-1px; margin-right:4px;"></i>View all 14 photos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail body -->
+  <div class="detail-body">
+    <div class="main-col">
+      <div class="listing-eyebrow">Tribeca · Full-service · Exclusive</div>
+      <h1 class="listing-title">56 Leonard Street, Unit 12A</h1>
+      <div class="listing-sub">New York, NY 10013 · 12th floor · South &amp; west exposures</div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-cell"><div class="stat-label">Bedrooms</div><div class="stat-val">2</div></div>
+        <div class="stat-cell"><div class="stat-label">Bathrooms</div><div class="stat-val">2</div></div>
+        <div class="stat-cell"><div class="stat-label">Sq footage</div><div class="stat-val">1,600 <span>sf</span></div></div>
+        <div class="stat-cell"><div class="stat-label">Floor</div><div class="stat-val">12 <span>of 57</span></div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="section-block">
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="showTab('about', this)">About</button>
+          <button class="tab-btn" onclick="showTab('amenities', this)">Amenities</button>
+          <button class="tab-btn" onclick="showTab('details', this)">Details</button>
+          <button class="tab-btn" onclick="showTab('neighborhood', this)">Neighborhood</button>
+        </div>
+
+        <div id="tab-about" class="tab-panel active">
+          <p class="desc-text">A rare opportunity at 56 Leonard — Jenga Tower — one of Tribeca's most architecturally distinctive addresses. This 12th-floor residence offers sweeping south and west exposures across the Manhattan skyline, with floor-to-ceiling windows and 10-foot ceilings throughout.<br><br>The open kitchen features Gaggenau appliances, Calacatta marble countertops, and custom cabinetry. The primary suite includes a walk-in closet and a five-fixture bath with radiant heated floors. A private terrace off the living room adds rare outdoor space in the heart of Tribeca.</p>
+          <span class="read-more-link">Read more →</span>
+        </div>
+
+        <div id="tab-amenities" class="tab-panel">
+          <div class="amenity-subhead">In-unit</div>
+          <div class="amenity-grid">
+            <div class="amenity-item"><i class="ti ti-wind"></i> Central A/C</div>
+            <div class="amenity-item"><i class="ti ti-wash-machine"></i> Washer / dryer</div>
+            <div class="amenity-item"><i class="ti ti-flame"></i> Radiant heated floors</div>
+            <div class="amenity-item"><i class="ti ti-building"></i> Private terrace</div>
+            <div class="amenity-item"><i class="ti ti-chef-hat"></i> Gaggenau kitchen</div>
+            <div class="amenity-item"><i class="ti ti-eye"></i> Floor-to-ceiling windows</div>
+          </div>
+          <div class="amenity-subhead">Building</div>
+          <div class="amenity-grid">
+            <div class="amenity-item"><i class="ti ti-user-circle"></i> 24/7 doorman</div>
+            <div class="amenity-item"><i class="ti ti-barbell"></i> Fitness center</div>
+            <div class="amenity-item"><i class="ti ti-droplet"></i> Rooftop pool</div>
+            <div class="amenity-item"><i class="ti ti-paw"></i> Pet friendly</div>
+            <div class="amenity-item"><i class="ti ti-car"></i> Valet parking</div>
+            <div class="amenity-item"><i class="ti ti-armchair"></i> Resident lounge</div>
+          </div>
+        </div>
+
+        <div id="tab-details" class="tab-panel">
+          <div class="details-grid">
+            <div class="detail-cell"><div class="label">Building type</div><div class="value">Full-service condo</div></div>
+            <div class="detail-cell"><div class="label">Year built</div><div class="value">2017</div></div>
+            <div class="detail-cell"><div class="label">Lease term</div><div class="value">12 months</div></div>
+            <div class="detail-cell"><div class="label">Available</div><div class="value">June 1, 2026</div></div>
+            <div class="detail-cell"><div class="label">Pets</div><div class="value">Allowed (case by case)</div></div>
+            <div class="detail-cell"><div class="label">Laundry</div><div class="value">In-unit</div></div>
+            <div class="detail-cell"><div class="label">Parking</div><div class="value">Valet · $450/mo</div></div>
+            <div class="detail-cell"><div class="label">Storage</div><div class="value">Private cage included</div></div>
+            <div class="detail-cell"><div class="label">Exposure</div><div class="value">South &amp; west</div></div>
+            <div class="detail-cell"><div class="label">Ceiling height</div><div class="value">10 ft</div></div>
+          </div>
+        </div>
+
+        <div id="tab-neighborhood" class="tab-panel">
+          <div class="map-box">
+            <i class="ti ti-map-2"></i>
+            <span>56 Leonard St, Tribeca</span>
+          </div>
+          <div style="margin-top:1rem;">
+            <div class="amenity-subhead">Nearby</div>
+            <div class="nearby-item"><span class="nearby-name"><i class="ti ti-train" style="font-size:0.8rem; margin-right:5px;"></i>Franklin St (1 train)</span><span class="nearby-dist">2 min walk</span></div>
+            <div class="nearby-item"><span class="nearby-name"><i class="ti ti-train" style="font-size:0.8rem; margin-right:5px;"></i>Canal St (A/C/E)</span><span class="nearby-dist">5 min walk</span></div>
+            <div class="nearby-item"><span class="nearby-name"><i class="ti ti-tree" style="font-size:0.8rem; margin-right:5px;"></i>Hudson River Park</span><span class="nearby-dist">6 min walk</span></div>
+            <div class="nearby-item"><span class="nearby-name"><i class="ti ti-shopping-cart" style="font-size:0.8rem; margin-right:5px;"></i>Whole Foods Tribeca</span><span class="nearby-dist">4 min walk</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact card -->
+    <div class="side-col">
+      <div class="contact-card">
+        <div class="contact-price">$12,500 <span>/mo</span></div>
+        <div class="avail-row"><div class="avail-dot"></div> Available June 1, 2026</div>
+
+        <button class="btn btn-gold btn-full" style="margin-bottom:10px;">Request a showing</button>
+        <button class="btn btn-ghost btn-full" style="margin-bottom:1rem;">Send a message</button>
+
+        <hr class="divider" />
+
+        <table class="lease-table">
+          <tr><td>Lease term</td><td>12 months</td></tr>
+          <tr><td>Security deposit</td><td>2 months</td></tr>
+          <tr><td>Broker fee</td><td>None</td></tr>
+          <tr><td>Pets</td><td>Allowed</td></tr>
+        </table>
+
+        <div class="verified-strip" style="margin-top:1rem;">
+          <div class="vs-icon"><i class="ti ti-shield-check"></i></div>
+          <div class="vs-text">You are a verified Harper member. Your inquiry goes directly to the landlord — no broker involved.</div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="landlord-row">
+          <div class="landlord-av">RK</div>
+          <div>
+            <div class="landlord-name">Robert Kim</div>
+            <div class="landlord-sub">Verified landlord · Listed 3 days ago</div>
+          </div>
+        </div>
+
+        <div class="share-row">
+          <button class="share-btn"><i class="ti ti-share" style="font-size:0.8rem;"></i> Share</button>
+          <button class="share-btn"><i class="ti ti-printer" style="font-size:0.8rem;"></i> Print</button>
+          <button class="share-btn"><i class="ti ti-flag" style="font-size:0.8rem;"></i> Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(id, el) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>
