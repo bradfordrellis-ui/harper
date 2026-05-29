@@ -6,76 +6,54 @@
   <title>List Your Property — Harper</title>
   <link rel="stylesheet" href="css/harper.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background: var(--gray-pale); }
-    .listing-shell { min-height: 100vh; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; }
-    .listing-logo { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.18em; color: var(--black); margin-bottom: 6px; text-align: center; }
-    .listing-logo .o { color: var(--gold); }
+    .shell { min-height: 100vh; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; }
+    .shell-logo { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.18em; color: var(--black); margin-bottom: 6px; text-align: center; text-decoration: none; }
+    .shell-logo .a { color: var(--gold); }
     .portal-label { font-size: 0.65rem; letter-spacing: 0.16em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 2rem; text-align: center; }
-    .listing-card { background: var(--white); border: var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 560px; padding: 2.25rem 2.5rem; }
+    .card { background: var(--white); border: var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 560px; padding: 2.25rem 2.5rem; }
     .step-eyebrow { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
     .step-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; color: var(--black); margin-bottom: 6px; }
     .step-sub { font-size: 0.82rem; color: var(--gray-mid); margin-bottom: 1.75rem; line-height: 1.7; }
     .btn-row { display: flex; gap: 10px; margin-top: 1.75rem; }
     .btn-row .btn-ghost { flex: 1; }
     .btn-row .btn-gold { flex: 2; }
-    /* Upload zone */
-    .upload-zone {
-      border: 0.5px dashed var(--gray-light); border-radius: var(--radius-md);
-      padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s;
-    }
-    .upload-zone:hover { border-color: var(--gold); }
-    .upload-zone i { font-size: 1.75rem; color: var(--gray-light); display: block; margin-bottom: 8px; }
-    .upload-zone p { font-size: 0.82rem; color: var(--gray-mid); margin-bottom: 4px; }
-    .upload-zone small { font-size: 0.7rem; color: var(--gray-light); }
-    .photo-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .photo-thumb { width: 64px; height: 64px; border-radius: var(--radius-md); border: var(--border); background: var(--gray-pale); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .photo-thumb i { font-size: 1.1rem; color: var(--gray-light); }
-    .photo-thumb small { font-size: 0.58rem; color: var(--gray-light); margin-top: 3px; text-align: center; line-height: 1.2; }
-    /* Amenity grid */
-    .amenity-toggle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .amenity-toggle {
-      display: flex; align-items: center; gap: 8px;
-      padding: 9px 12px; border: var(--border); border-radius: var(--radius-md);
-      cursor: pointer; font-size: 0.78rem; color: var(--gray-mid);
-      transition: all 0.15s; user-select: none;
-    }
+    .amenity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .amenity-toggle { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: var(--border); border-radius: var(--radius-md); cursor: pointer; font-size: 0.78rem; color: var(--gray-mid); transition: all 0.15s; user-select: none; }
     .amenity-toggle i { font-size: 0.9rem; }
     .amenity-toggle:hover { border-color: var(--gold); color: var(--gold); }
     .amenity-toggle.active { border-color: var(--gold); color: var(--gold); background: var(--gold-pale); }
-    /* Review grid */
     .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
-    .review-item {}
     .review-label { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 3px; }
     .review-val { font-size: 0.82rem; color: var(--black); }
-    .review-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
-    /* Success */
+    .error-msg { background: #fff0f0; border: 0.5px solid #ffcccc; border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.78rem; color: #cc0000; margin-bottom: 1rem; display: none; }
+    .error-msg.show { display: block; }
     .success-view { text-align: center; padding: 1rem 0; }
     .success-icon { width: 58px; height: 58px; border-radius: 50%; border: 0.5px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
     .success-icon i { font-size: 1.4rem; color: var(--gold); }
     .success-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; margin-bottom: 8px; }
-    .success-sub { font-size: 0.85rem; color: var(--gray-mid); line-height: 1.75; max-width: 340px; margin: 0 auto 1.25rem; }
+    .success-sub { font-size: 0.85rem; color: var(--gray-mid); line-height: 1.75; max-width: 360px; margin: 0 auto 1.25rem; }
     .success-ref { font-size: 0.68rem; color: var(--gray-light); letter-spacing: 0.1em; text-transform: uppercase; }
     .next-steps { margin-top: 1.5rem; text-align: left; border-top: var(--border); padding-top: 1.25rem; }
     .next-steps-label { font-size: 0.65rem; letter-spacing: 0.14em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 10px; }
     .next-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
     .next-num { width: 20px; height: 20px; border-radius: 50%; border: 0.5px solid var(--gold); font-size: 0.68rem; color: var(--gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
     .next-text { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.6; }
-    .step { display: none; }
-    .step.active { display: block; }
     .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 1.25rem; }
     .checkbox-row input { accent-color: var(--gold); margin-top: 3px; flex-shrink: 0; }
     .checkbox-row label { font-size: 0.75rem; color: var(--gray-mid); line-height: 1.6; }
-    .form-note { font-size: 0.68rem; color: var(--gray-light); text-align: center; margin-top: 1rem; line-height: 1.6; }
-    .form-note a { color: var(--gold); }
+    .step { display: none; }
+    .step.active { display: block; }
   </style>
 </head>
 <body>
-  <div class="listing-shell">
-    <div class="listing-logo">H<span class="a">A</span>RPER</div>
+  <div class="shell">
+    <a href="index.html" class="shell-logo">H<span class="a">A</span>RPER</a>
     <div class="portal-label">Landlord portal</div>
 
-    <div class="listing-card">
+    <div class="card">
       <div class="step-dots" id="dots">
         <div class="step-dot active" id="d1"></div>
         <div class="step-dot" id="d2"></div>
@@ -84,28 +62,82 @@
         <div class="step-dot" id="d5"></div>
       </div>
 
-      <!-- Step 1 -->
+      <!-- Step 1: Landlord info -->
       <div class="step active" id="step1">
         <div class="step-eyebrow">Step 1 of 5</div>
-        <div class="step-title">Property basics</div>
-        <div class="step-sub">Start with the fundamentals. All listings on Harper are reviewed before going live.</div>
-        <div class="form-group"><label class="form-label">Full address</label><input class="form-input" type="text" placeholder="56 Leonard St, New York, NY 10013" /></div>
+        <div class="step-title">Your details</div>
+        <div class="step-sub">Tell us who you are. We'll use this to contact you when qualified renters inquire about your listing.</div>
+        <div id="error1" class="error-msg"></div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Unit number</label><input class="form-input" type="text" placeholder="12A" /></div>
-          <div class="form-group"><label class="form-label">Floor</label><input class="form-input" type="text" placeholder="12" /></div>
+          <div class="form-group">
+            <label class="form-label">First name</label>
+            <input class="form-input" type="text" id="landlordFirst" placeholder="Robert" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last name</label>
+            <input class="form-input" type="text" id="landlordLast" placeholder="Kim" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="landlordEmail" placeholder="robert@example.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone number</label>
+          <input class="form-input" type="tel" id="landlordPhone" placeholder="+1 (212) 000-0000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your role</label>
+          <select class="form-select" id="landlordRole">
+            <option>Property owner</option>
+            <option>Property manager</option>
+            <option>Building management company</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <button class="btn btn-gold btn-full" onclick="submitStep1()">Continue →</button>
+      </div>
+
+      <!-- Step 2: Property basics -->
+      <div class="step" id="step2">
+        <div class="step-eyebrow">Step 2 of 5</div>
+        <div class="step-title">Property basics</div>
+        <div class="step-sub">Start with the fundamentals. All listings are reviewed by our team before going live.</div>
+        <div class="form-group">
+          <label class="form-label">Full address</label>
+          <input class="form-input" type="text" id="address" placeholder="56 Leonard St, New York, NY 10013" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Unit number</label>
+            <input class="form-input" type="text" id="unit" placeholder="12A" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Floor</label>
+            <input class="form-input" type="text" id="floor" placeholder="12" />
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Neighborhood</label>
-          <select class="form-select">
-            <option>Upper East Side</option><option>Upper West Side</option><option>Midtown</option>
-            <option>Tribeca</option><option>SoHo</option><option>West Village</option>
-            <option>Chelsea</option><option>Gramercy</option><option>Williamsburg</option>
-            <option>Greenpoint</option><option>Brooklyn Heights</option><option>Cobble Hill</option><option>DUMBO</option>
+          <select class="form-select" id="neighborhood">
+            <option>Upper East Side</option>
+            <option>Upper West Side</option>
+            <option>Midtown</option>
+            <option>Tribeca</option>
+            <option>SoHo</option>
+            <option>West Village</option>
+            <option>Chelsea</option>
+            <option>Gramercy</option>
+            <option>Williamsburg</option>
+            <option>Greenpoint</option>
+            <option>Brooklyn Heights</option>
+            <option>Cobble Hill</option>
+            <option>DUMBO</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Building type</label>
-          <div class="pill-group">
+          <div class="pill-group" id="buildingType">
             <div class="pill active" onclick="this.classList.toggle('active')">Full-service building</div>
             <div class="pill" onclick="this.classList.toggle('active')">Boutique walk-up</div>
             <div class="pill" onclick="this.classList.toggle('active')">Townhouse / brownstone</div>
@@ -114,52 +146,93 @@
             <div class="pill" onclick="this.classList.toggle('active')">Condo</div>
           </div>
         </div>
-        <button class="btn btn-gold btn-full" onclick="goTo(2)">Continue →</button>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="step" id="step2">
-        <div class="step-eyebrow">Step 2 of 5</div>
-        <div class="step-title">Unit details</div>
-        <div class="step-sub">Describe what makes this apartment worth renting.</div>
-        <div class="form-row-3">
-          <div class="form-group"><label class="form-label">Bedrooms</label><select class="form-select"><option>Studio</option><option>1</option><option selected>2</option><option>3</option><option>4+</option></select></div>
-          <div class="form-group"><label class="form-label">Bathrooms</label><select class="form-select"><option>1</option><option selected>2</option><option>2.5</option><option>3</option><option>3+</option></select></div>
-          <div class="form-group"><label class="form-label">Sq footage</label><input class="form-input" type="text" placeholder="1,240" /></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Monthly rent ($)</label><input class="form-input" type="text" placeholder="8,500" /></div>
-          <div class="form-group"><label class="form-label">Available from</label><input class="form-input" type="date" /></div>
-        </div>
-        <div class="form-group"><label class="form-label">Lease term</label><select class="form-select"><option>12 months</option><option>18 months</option><option>24 months</option><option>Flexible</option></select></div>
-        <div class="form-group"><label class="form-label">Listing description</label><textarea class="form-textarea" placeholder="Describe the apartment — views, finishes, natural light, layout highlights…"></textarea></div>
         <div class="btn-row">
           <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
           <button class="btn btn-gold" onclick="goTo(3)">Continue →</button>
         </div>
       </div>
 
-      <!-- Step 3 -->
+      <!-- Step 3: Unit details -->
       <div class="step" id="step3">
         <div class="step-eyebrow">Step 3 of 5</div>
+        <div class="step-title">Unit details</div>
+        <div class="step-sub">Describe what makes this apartment worth renting.</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Bedrooms</label>
+            <select class="form-select" id="bedrooms">
+              <option>Studio</option>
+              <option>1</option>
+              <option selected>2</option>
+              <option>3</option>
+              <option>4+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bathrooms</label>
+            <select class="form-select" id="bathrooms">
+              <option>1</option>
+              <option selected>2</option>
+              <option>2.5</option>
+              <option>3</option>
+              <option>3+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sq footage</label>
+            <input class="form-input" type="text" id="sqft" placeholder="1,240" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Monthly rent ($)</label>
+            <input class="form-input" type="text" id="rent" placeholder="8,500" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Available from</label>
+            <input class="form-input" type="date" id="availableFrom" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Lease term</label>
+          <select class="form-select" id="leaseTerm">
+            <option>12 months</option>
+            <option>18 months</option>
+            <option>24 months</option>
+            <option>Flexible</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Listing description</label>
+          <textarea class="form-textarea" id="description" placeholder="Describe the apartment — views, finishes, natural light, layout highlights…"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+          <button class="btn btn-gold" onclick="goTo(4)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Amenities -->
+      <div class="step" id="step4">
+        <div class="step-eyebrow">Step 4 of 5</div>
         <div class="step-title">Amenities &amp; features</div>
-        <div class="step-sub">Select everything that applies. These help qualified renters find your listing.</div>
+        <div class="step-sub">Select everything that applies.</div>
         <div class="form-group">
           <label class="form-label">In-unit</label>
-          <div class="amenity-toggle-grid">
+          <div class="amenity-grid" id="amenitiesInunit">
             <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-wash-machine"></i> Washer / dryer</div>
             <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-wind"></i> Central A/C</div>
             <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-flame"></i> Fireplace</div>
-            <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-armchair"></i> Furnished option</div>
+            <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-armchair"></i> Furnished option</div>
             <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-chef-hat"></i> Chef's kitchen</div>
-            <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-building"></i> Private terrace</div>
+            <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-building"></i> Private terrace</div>
           </div>
         </div>
         <div class="form-group" style="margin-top:1.25rem;">
           <label class="form-label">Building</label>
-          <div class="amenity-toggle-grid">
+          <div class="amenity-grid" id="amenitiesBuilding">
             <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-user-circle"></i> Full-time doorman</div>
-            <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-barbell"></i> Fitness center</div>
+            <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-barbell"></i> Fitness center</div>
             <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-droplet"></i> Pool / rooftop</div>
             <div class="amenity-toggle" onclick="this.classList.toggle('active')"><i class="ti ti-car"></i> Parking included</div>
             <div class="amenity-toggle active" onclick="this.classList.toggle('active')"><i class="ti ti-paw"></i> Pet friendly</div>
@@ -168,74 +241,31 @@
         </div>
         <div class="form-group" style="margin-top:1.25rem;">
           <label class="form-label">Views</label>
-          <div class="pill-group">
+          <div class="pill-group" id="views">
             <div class="pill" onclick="this.classList.toggle('active')">City skyline</div>
-            <div class="pill active" onclick="this.classList.toggle('active')">River / water</div>
+            <div class="pill" onclick="this.classList.toggle('active')">River / water</div>
             <div class="pill" onclick="this.classList.toggle('active')">Park / garden</div>
             <div class="pill" onclick="this.classList.toggle('active')">Open / unobstructed</div>
             <div class="pill" onclick="this.classList.toggle('active')">None</div>
           </div>
         </div>
-        <div class="btn-row">
-          <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
-          <button class="btn btn-gold" onclick="goTo(4)">Continue →</button>
-        </div>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="step" id="step4">
-        <div class="step-eyebrow">Step 4 of 5</div>
-        <div class="step-title">Photos &amp; media</div>
-        <div class="step-sub">Harper listings require high-quality photography. Minimum 8 photos recommended. Professional photography services available upon request.</div>
-        <div class="upload-zone" onclick="addPhoto()">
-          <i class="ti ti-photo-up"></i>
-          <p>Drag photos here or click to browse</p>
-          <small>JPG or PNG · Max 25MB per photo · Min 1920px wide</small>
-        </div>
-        <div class="photo-previews" id="photo-previews"></div>
-        <hr class="divider" />
-        <div class="form-group"><label class="form-label">Virtual tour link (optional)</label><input class="form-input" type="text" placeholder="https://my.matterport.com/show/?m=…" /></div>
-        <div class="form-group">
-          <label class="form-label">Floor plan (optional)</label>
-          <div class="upload-zone" style="padding:1rem;">
-            <i class="ti ti-file-upload" style="font-size:1.25rem;"></i>
-            <p style="font-size:0.78rem;">Upload floor plan PDF or image</p>
-          </div>
+        <div class="form-group" style="margin-top:1.25rem;">
+          <label class="form-label">Virtual tour link (optional)</label>
+          <input class="form-input" type="text" id="virtualTour" placeholder="https://my.matterport.com/show/?m=…" />
         </div>
         <div class="btn-row">
           <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
           <button class="btn btn-gold" onclick="goTo(5)">Continue →</button>
         </div>
-        <p class="form-note">Need a photographer? <a href="#">Request Harper's preferred vendor list →</a></p>
       </div>
 
-      <!-- Step 5 -->
+      <!-- Step 5: Review & submit -->
       <div class="step" id="step5">
         <div class="step-eyebrow">Step 5 of 5</div>
         <div class="step-title">Review &amp; submit</div>
-        <div class="step-sub">Everything looks good? Our team will review your listing within 1 business day before it goes live.</div>
-        <div class="review-grid">
-          <div class="review-item"><div class="review-label">Address</div><div class="review-val">56 Leonard St, Unit 12A</div></div>
-          <div class="review-item"><div class="review-label">Neighborhood</div><div class="review-val">Tribeca</div></div>
-          <div class="review-item"><div class="review-label">Monthly rent</div><div class="review-val">$8,500 / mo</div></div>
-          <div class="review-item"><div class="review-label">Size</div><div class="review-val">2 bd · 2 ba · 1,240 sf</div></div>
-          <div class="review-item"><div class="review-label">Available</div><div class="review-val">June 1, 2026</div></div>
-          <div class="review-item"><div class="review-label">Lease term</div><div class="review-val">12 months</div></div>
-        </div>
-        <div style="margin-bottom:1rem;">
-          <div class="review-label">Amenities</div>
-          <div class="review-tags">
-            <span class="badge badge-gold">Washer / dryer</span>
-            <span class="badge badge-gold">Central A/C</span>
-            <span class="badge badge-gold">Furnished option</span>
-            <span class="badge badge-gold">Private terrace</span>
-            <span class="badge badge-gold">Doorman</span>
-            <span class="badge badge-gold">Fitness center</span>
-            <span class="badge badge-gold">Pet friendly</span>
-            <span class="badge badge-gold">River views</span>
-          </div>
-        </div>
-        <div class="review-item" style="border: none; padding: 0;"><div class="review-label">Photos</div><div class="review-val">6 photos uploaded</div></div>
+        <div class="step-sub">Our team will review your listing within 1 business day before it goes live to Harper's verified members.</div>
+        <div id="error5" class="error-msg"></div>
+        <div class="review-grid" id="reviewGrid"></div>
         <hr class="divider" />
         <div class="checkbox-row">
           <input type="checkbox" id="accuracy" checked />
@@ -243,7 +273,7 @@
         </div>
         <div class="btn-row">
           <button class="btn btn-ghost" onclick="goTo(4)">← Back</button>
-          <button class="btn btn-gold" onclick="goTo(6)">Submit listing</button>
+          <button class="btn btn-gold" id="btn5" onclick="submitListing()">Submit listing</button>
         </div>
       </div>
 
@@ -252,32 +282,136 @@
         <div class="success-view">
           <div class="success-icon"><i class="ti ti-check"></i></div>
           <div class="success-title">Listing submitted</div>
-          <div class="success-sub">Your listing is under review. Our team will inspect it for quality and accuracy before it goes live to Harper's verified member base.</div>
-          <div class="success-ref">Listing #LST-2026-00391</div>
+          <div class="success-sub">Your listing is under review. Our team will inspect it before it goes live to Harper's verified member base.</div>
+          <div class="success-ref" id="listingRef">Listing #LST-2026-00001</div>
           <div class="next-steps">
             <div class="next-steps-label">What happens next</div>
             <div class="next-item"><div class="next-num">1</div><div class="next-text">Our team reviews your listing within 1 business day</div></div>
             <div class="next-item"><div class="next-num">2</div><div class="next-text">Once approved, it goes live to all income-verified Harper members</div></div>
             <div class="next-item"><div class="next-num">3</div><div class="next-text">Qualified renters can request a showing directly through the platform</div></div>
-            <div class="next-item"><div class="next-num">4</div><div class="next-text">You'll be notified by email and SMS for every inquiry</div></div>
+            <div class="next-item"><div class="next-num">4</div><div class="next-text">You'll be notified by email for every inquiry</div></div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
   <script>
-    const photoLabels = ['Living room','Kitchen','Primary bed','Bathroom','Terrace','View'];
-    let photoCount = 0;
-    function addPhoto() {
-      if (photoCount >= 6) return;
-      const p = document.getElementById('photo-previews');
-      const wrap = document.createElement('div');
-      wrap.className = 'photo-thumb';
-      wrap.innerHTML = '<i class="ti ti-photo"></i><small>' + (photoLabels[photoCount] || 'Photo ' + (photoCount+1)) + '</small>';
-      p.appendChild(wrap);
-      photoCount++;
+    const { createClient } = supabase;
+    const client = createClient(
+      'https://qooofbxwhjmeoyhsihki.supabase.co',
+      'sb_publishable_7J8djU8_1ORfR2e_CFTO3g_ED2OaUPU'
+    );
+
+    let listingData = {};
+
+    // Step 1 — validate landlord info and save
+    function submitStep1() {
+      const first = document.getElementById('landlordFirst').value.trim();
+      const last  = document.getElementById('landlordLast').value.trim();
+      const email = document.getElementById('landlordEmail').value.trim();
+      const phone = document.getElementById('landlordPhone').value.trim();
+      const errorEl = document.getElementById('error1');
+
+      if (!first || !last || !email) {
+        errorEl.textContent = 'Please fill in your name and email.';
+        errorEl.classList.add('show');
+        return;
+      }
+      errorEl.classList.remove('show');
+      listingData.landlord_name  = first + ' ' + last;
+      listingData.landlord_email = email;
+      listingData.landlord_phone = phone;
+      goTo(2);
     }
+
+    // Step 5 — populate review summary
+    function populateReview() {
+      const address   = document.getElementById('address').value || '—';
+      const unit      = document.getElementById('unit').value || '—';
+      const hood      = document.getElementById('neighborhood').value || '—';
+      const rent      = document.getElementById('rent').value || '—';
+      const beds      = document.getElementById('bedrooms').value || '—';
+      const baths     = document.getElementById('bathrooms').value || '—';
+      const sqft      = document.getElementById('sqft').value || '—';
+      const avail     = document.getElementById('availableFrom').value || '—';
+      const lease     = document.getElementById('leaseTerm').value || '—';
+
+      document.getElementById('reviewGrid').innerHTML = `
+        <div><div class="review-label">Address</div><div class="review-val">${address}, Unit ${unit}</div></div>
+        <div><div class="review-label">Neighborhood</div><div class="review-val">${hood}</div></div>
+        <div><div class="review-label">Monthly rent</div><div class="review-val">$${rent}/mo</div></div>
+        <div><div class="review-label">Size</div><div class="review-val">${beds} bd · ${baths} ba · ${sqft} sf</div></div>
+        <div><div class="review-label">Available</div><div class="review-val">${avail}</div></div>
+        <div><div class="review-label">Lease term</div><div class="review-val">${lease}</div></div>
+        <div><div class="review-label">Landlord</div><div class="review-val">${listingData.landlord_name || '—'}</div></div>
+        <div><div class="review-label">Contact</div><div class="review-val">${listingData.landlord_email || '—'}</div></div>
+      `;
+    }
+
+    // Final submission
+    async function submitListing() {
+      const errorEl = document.getElementById('error5');
+      const btn     = document.getElementById('btn5');
+
+      if (!document.getElementById('accuracy').checked) {
+        errorEl.textContent = 'Please confirm the accuracy of your listing.';
+        errorEl.classList.add('show');
+        return;
+      }
+
+      errorEl.classList.remove('show');
+      btn.textContent = 'Submitting…';
+      btn.disabled = true;
+
+      // Collect amenities
+      const inunit   = [...document.querySelectorAll('#amenitiesInunit .amenity-toggle.active')].map(e => e.innerText.trim()).join(', ');
+      const building = [...document.querySelectorAll('#amenitiesBuilding .amenity-toggle.active')].map(e => e.innerText.trim()).join(', ');
+      const views    = [...document.querySelectorAll('#views .pill.active')].map(e => e.innerText.trim()).join(', ');
+      const btype    = [...document.querySelectorAll('#buildingType .pill.active')].map(e => e.innerText.trim()).join(', ');
+
+      const listing = {
+        landlord_name:     listingData.landlord_name,
+        landlord_email:    listingData.landlord_email,
+        landlord_phone:    listingData.landlord_phone,
+        address:           document.getElementById('address').value,
+        unit:              document.getElementById('unit').value,
+        floor:             document.getElementById('floor').value,
+        neighborhood:      document.getElementById('neighborhood').value,
+        building_type:     btype,
+        bedrooms:          document.getElementById('bedrooms').value,
+        bathrooms:         document.getElementById('bathrooms').value,
+        sqft:              document.getElementById('sqft').value,
+        rent:              document.getElementById('rent').value,
+        available_from:    document.getElementById('availableFrom').value,
+        lease_term:        document.getElementById('leaseTerm').value,
+        description:       document.getElementById('description').value,
+        amenities_inunit:  inunit,
+        amenities_building:building,
+        views:             views,
+        virtual_tour:      document.getElementById('virtualTour').value,
+        status:            'pending',
+        submitted_at:      new Date().toISOString()
+      };
+
+      const { error } = await client.from('listings').insert(listing);
+
+      if (error) {
+        errorEl.textContent = 'Error submitting listing: ' + error.message;
+        errorEl.classList.add('show');
+        btn.textContent = 'Submit listing';
+        btn.disabled = false;
+        return;
+      }
+
+      const ref = 'LST-2026-' + String(Math.floor(Math.random() * 90000) + 10000);
+      document.getElementById('listingRef').textContent = 'Listing #' + ref;
+      btn.textContent = 'Submit listing';
+      btn.disabled = false;
+      goTo(6);
+    }
+
     function goTo(n) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
       document.getElementById('step' + n).classList.add('active');
@@ -287,6 +421,7 @@
         d.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
       }
       document.getElementById('dots').style.display = n === 6 ? 'none' : 'flex';
+      if (n === 5) populateReview();
       window.scrollTo(0, 0);
     }
   </script>
