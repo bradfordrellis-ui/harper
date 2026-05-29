@@ -9,8 +9,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background: var(--gray-pale); }
-
-    /* Login screen */
     .login-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
     .login-card { background: var(--white); border: var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 380px; padding: 2.5rem; text-align: center; }
     .login-logo { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.18em; color: var(--black); margin-bottom: 6px; }
@@ -20,8 +18,6 @@
     .login-sub { font-size: 0.78rem; color: var(--gray-mid); margin-bottom: 1.5rem; }
     .error-msg { background: #fff0f0; border: 0.5px solid #ffcccc; border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.78rem; color: #cc0000; margin-bottom: 1rem; display: none; text-align: left; }
     .error-msg.show { display: block; }
-
-    /* Admin shell */
     .admin-shell { display: none; }
     .admin-nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: var(--border); background: var(--white); position: sticky; top: 0; z-index: 100; }
     .admin-logo { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.18em; color: var(--black); }
@@ -32,32 +28,26 @@
     .admin-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; }
     .admin-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; }
     .admin-sub { font-size: 0.82rem; color: var(--gray-mid); margin-top: 4px; }
-
-    /* Stats */
     .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
     .stat-card { background: var(--white); border: var(--border); border-radius: var(--radius-md); padding: 1rem; }
     .stat-label { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 6px; }
     .stat-val { font-family: var(--font-display); font-size: 1.75rem; color: var(--black); }
     .stat-sub { font-size: 0.7rem; color: var(--gray-mid); margin-top: 3px; }
-
-    /* Filter tabs */
     .filter-tabs { display: flex; gap: 6px; margin-bottom: 1rem; }
     .filter-tab { padding: 6px 16px; border: var(--border); border-radius: 20px; font-size: 0.75rem; color: var(--gray-mid); cursor: pointer; background: var(--white); font-family: var(--font-body); transition: all 0.15s; }
     .filter-tab:hover { border-color: var(--gold); color: var(--gold); }
     .filter-tab.active { background: var(--gold); color: var(--white); border-color: var(--gold); }
-
-    /* Applications table */
     .applications-table { background: var(--white); border: var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .table-header { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 140px; gap: 1rem; padding: 10px 1.25rem; background: var(--gray-pale); border-bottom: var(--border); }
+    .table-header { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 160px; gap: 1rem; padding: 10px 1.25rem; background: var(--gray-pale); border-bottom: var(--border); }
     .th { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; font-weight: 500; }
-    .app-row { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 140px; gap: 1rem; padding: 14px 1.25rem; border-bottom: var(--border); align-items: center; transition: background 0.15s; }
+    .app-row { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 160px; gap: 1rem; padding: 14px 1.25rem; border-bottom: var(--border); align-items: center; transition: background 0.15s; }
     .app-row:last-child { border-bottom: none; }
     .app-row:hover { background: var(--gray-pale); }
     .app-name { font-size: 0.85rem; font-weight: 500; color: var(--black); }
     .app-email { font-size: 0.72rem; color: var(--gray-mid); margin-top: 2px; }
     .app-cell { font-size: 0.78rem; color: var(--gray-mid); }
     .app-date { font-size: 0.72rem; color: var(--gray-light); }
-    .app-actions { display: flex; gap: 6px; }
+    .app-actions { display: flex; gap: 5px; flex-wrap: wrap; }
     .action-btn { padding: 5px 10px; border-radius: var(--radius-md); font-size: 0.68rem; cursor: pointer; font-family: var(--font-body); letter-spacing: 0.04em; border: none; transition: all 0.15s; }
     .btn-approve { background: var(--green-pale); color: var(--green); }
     .btn-approve:hover { background: var(--green); color: var(--white); }
@@ -71,21 +61,14 @@
     .status-rejected { background: #fff0f0; color: #cc4444; }
     .empty-state { text-align: center; padding: 3rem; color: var(--gray-light); font-size: 0.85rem; }
     .loading-state { text-align: center; padding: 3rem; color: var(--gray-light); font-size: 0.85rem; }
-
-    /* Message modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 200; padding: 1rem; }
     .modal-overlay.show { display: flex; }
     .modal { background: var(--white); border-radius: var(--radius-lg); width: 100%; max-width: 480px; padding: 2rem; }
     .modal-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 400; margin-bottom: 4px; }
     .modal-sub { font-size: 0.78rem; color: var(--gray-mid); margin-bottom: 1.25rem; }
     .modal-actions { display: flex; gap: 10px; margin-top: 1.25rem; }
-
-    /* Toast */
     .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--black); color: var(--white); padding: 12px 20px; border-radius: var(--radius-md); font-size: 0.82rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 300; }
     .toast.show { opacity: 1; }
-
-    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: -2px; margin-right: 6px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -98,10 +81,6 @@
       <div class="login-title">Sign in</div>
       <div class="login-sub">This area is restricted to Harper administrators only.</div>
       <div id="loginError" class="error-msg"></div>
-      <div class="form-group" style="text-align:left;">
-        <label class="form-label">Email</label>
-        <input class="form-input" type="email" id="adminEmail" placeholder="admin@harpernyc.com" />
-      </div>
       <div class="form-group" style="text-align:left;">
         <label class="form-label">Password</label>
         <input class="form-input" type="password" id="adminPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') adminLogin()" />
@@ -118,7 +97,6 @@
         <span class="admin-tag">· Admin</span>
       </div>
       <div class="admin-nav-right">
-        <span style="font-size:0.75rem; color:var(--gray-mid);" id="adminEmailDisplay"></span>
         <button class="btn btn-ghost btn-sm" onclick="adminLogout()">Sign out</button>
       </div>
     </nav>
@@ -134,15 +112,13 @@
         </button>
       </div>
 
-      <!-- Stats -->
-      <div class="stats-row" id="statsRow">
+      <div class="stats-row">
         <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val" id="statTotal">—</div><div class="stat-sub">applications</div></div>
         <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val" id="statPending">—</div><div class="stat-sub">awaiting review</div></div>
         <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-val" id="statApproved">—</div><div class="stat-sub">active members</div></div>
         <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-val" id="statRejected">—</div><div class="stat-sub">not approved</div></div>
       </div>
 
-      <!-- Filter tabs -->
       <div class="filter-tabs">
         <button class="filter-tab active" onclick="filterApps('all', this)">All</button>
         <button class="filter-tab" onclick="filterApps('pending', this)">Pending</button>
@@ -150,7 +126,6 @@
         <button class="filter-tab" onclick="filterApps('rejected', this)">Rejected</button>
       </div>
 
-      <!-- Table -->
       <div class="applications-table">
         <div class="table-header">
           <div class="th">Applicant</div>
@@ -187,13 +162,10 @@
     </div>
   </div>
 
-  <!-- Toast notification -->
   <div class="toast" id="toast"></div>
 
   <script>
-    // ============================================
-    // HARPER Admin — Supabase Setup
-    // ============================================
+    const ADMIN_PASSWORD = 'Harpertothemoon7!';
     const { createClient } = supabase;
     const client = createClient(
       'https://qooofbxwhjmeoyhsihki.supabase.co',
@@ -201,66 +173,36 @@
     );
 
     let allApplications = [];
-    let currentFilter  = 'all';
-    let msgEmail       = '';
+    let currentFilter   = 'all';
+    let msgEmail        = '';
 
-    // ============================================
-    // Auth
-    // ============================================
-    async function adminLogin() {
-      const email    = document.getElementById('adminEmail').value.trim();
+    function adminLogin() {
       const password = document.getElementById('adminPassword').value;
       const errorEl  = document.getElementById('loginError');
-      const btn      = document.getElementById('loginBtn');
 
-      if (!email || !password) {
-        errorEl.textContent = 'Please enter your email and password.';
+      if (!password) {
+        errorEl.textContent = 'Please enter the admin password.';
+        errorEl.classList.add('show');
+        return;
+      }
+      if (password !== ADMIN_PASSWORD) {
+        errorEl.textContent = 'Incorrect password. Please try again.';
         errorEl.classList.add('show');
         return;
       }
 
       errorEl.classList.remove('show');
-      btn.innerHTML = '<span class="spinner"></span>Signing in…';
-      btn.disabled = true;
-
-      const { data, error } = await client.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        errorEl.textContent = error.message;
-        errorEl.classList.add('show');
-        btn.textContent = 'Sign in →';
-        btn.disabled = false;
-        return;
-      }
-
-      document.getElementById('adminEmailDisplay').textContent = email;
-      showAdminPanel();
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminShell').style.display  = 'block';
+      loadApplications();
     }
 
-    async function adminLogout() {
-      await client.auth.signOut();
-      document.getElementById('adminShell').style.display = 'none';
+    function adminLogout() {
+      document.getElementById('adminShell').style.display  = 'none';
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('adminPassword').value = '';
     }
 
-    function showAdminPanel() {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminShell').style.display = 'block';
-      loadApplications();
-    }
-
-    // Check if already logged in
-    client.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        document.getElementById('adminEmailDisplay').textContent = data.session.user.email;
-        showAdminPanel();
-      }
-    });
-
-    // ============================================
-    // Load applications from Supabase
-    // ============================================
     async function loadApplications() {
       document.getElementById('appsList').innerHTML = '<div class="loading-state">Loading applications…</div>';
 
@@ -270,7 +212,7 @@
         .order('submitted_at', { ascending: false });
 
       if (error) {
-        document.getElementById('appsList').innerHTML = '<div class="empty-state">Error loading applications: ' + error.message + '</div>';
+        document.getElementById('appsList').innerHTML = '<div class="empty-state">Error: ' + error.message + '</div>';
         return;
       }
 
@@ -279,76 +221,56 @@
       renderApplications(currentFilter);
     }
 
-    // ============================================
-    // Stats
-    // ============================================
     function updateStats() {
-      const total    = allApplications.length;
-      const pending  = allApplications.filter(a => a.status === 'pending').length;
-      const approved = allApplications.filter(a => a.status === 'approved').length;
-      const rejected = allApplications.filter(a => a.status === 'rejected').length;
-
-      document.getElementById('statTotal').textContent    = total;
-      document.getElementById('statPending').textContent  = pending;
-      document.getElementById('statApproved').textContent = approved;
-      document.getElementById('statRejected').textContent = rejected;
+      document.getElementById('statTotal').textContent    = allApplications.length;
+      document.getElementById('statPending').textContent  = allApplications.filter(a => a.status === 'pending').length;
+      document.getElementById('statApproved').textContent = allApplications.filter(a => a.status === 'approved').length;
+      document.getElementById('statRejected').textContent = allApplications.filter(a => a.status === 'rejected').length;
     }
 
-    // ============================================
-    // Render applications list
-    // ============================================
     function renderApplications(filter) {
-      const list = filter === 'all'
-        ? allApplications
-        : allApplications.filter(a => a.status === filter);
-
-      const el = document.getElementById('appsList');
+      const list = filter === 'all' ? allApplications : allApplications.filter(a => a.status === filter);
+      const el   = document.getElementById('appsList');
 
       if (list.length === 0) {
-        el.innerHTML = '<div class="empty-state">No ' + filter + ' applications yet.</div>';
+        el.innerHTML = '<div class="empty-state">No ' + (filter === 'all' ? '' : filter + ' ') + 'applications yet.</div>';
         return;
       }
 
       el.innerHTML = list.map(app => {
-        const name      = ((app.first_name || '') + ' ' + (app.last_name || '')).trim() || '—';
-        const email     = app.email || '—';
-        const income    = app.income_range || '—';
-        const employ    = app.employment || '—';
-        const heard     = app.referral_source || '—';
-        const notes     = app.notes ? `<div style="font-size:0.7rem; color:var(--gray-light); margin-top:3px; font-style:italic;">"${app.notes}"</div>` : '';
-        const date      = app.submitted_at ? new Date(app.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
-        const status    = app.status || 'pending';
-        const statusClass = status === 'approved' ? 'status-approved' : status === 'rejected' ? 'status-rejected' : 'status-pending';
-        const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+        const name    = ((app.first_name || '') + ' ' + (app.last_name || '')).trim() || '—';
+        const email   = app.email || '—';
+        const income  = app.income_range || '—';
+        const employ  = app.employment || '—';
+        const heard   = app.referral_source || '—';
+        const notes   = app.notes ? `<div style="font-size:0.7rem;color:var(--gray-light);margin-top:3px;font-style:italic;">"${app.notes}"</div>` : '';
+        const date    = app.submitted_at ? new Date(app.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+        const status  = app.status || 'pending';
+        const sClass  = status === 'approved' ? 'status-approved' : status === 'rejected' ? 'status-rejected' : 'status-pending';
+        const sLabel  = status.charAt(0).toUpperCase() + status.slice(1);
+        const safeEmail = email.replace(/'/g, "\\'");
+        const safeName  = name.replace(/'/g, "\\'");
 
-        const approveBtn = status !== 'approved'
-          ? `<button class="action-btn btn-approve" onclick="updateStatus('${app.id}', 'approved')">Approve</button>`
-          : '';
-        const rejectBtn = status !== 'rejected'
-          ? `<button class="action-btn btn-reject" onclick="updateStatus('${app.id}', 'rejected')">Reject</button>`
-          : '';
-        const msgBtn = `<button class="action-btn btn-msg" onclick="openModal('${email}', '${name}')">Message</button>`;
+        const approveBtn = status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateStatus('${app.id}','approved')">Approve</button>` : '';
+        const rejectBtn  = status !== 'rejected'  ? `<button class="action-btn btn-reject"  onclick="updateStatus('${app.id}','rejected')">Reject</button>`   : '';
+        const msgBtn     = `<button class="action-btn btn-msg" onclick="openModal('${safeEmail}','${safeName}')">Message</button>`;
 
         return `
-          <div class="app-row" id="row-${app.id}">
+          <div class="app-row">
             <div>
               <div class="app-name">${name}</div>
               <div class="app-email">${email}</div>
               ${notes}
             </div>
-            <div class="app-cell">${income}<br><span style="font-size:0.7rem; color:var(--gray-light);">${employ}</span></div>
+            <div class="app-cell">${income}<br><span style="font-size:0.7rem;color:var(--gray-light);">${employ}</span></div>
             <div class="app-cell">${heard}</div>
             <div class="app-date">${date}</div>
-            <div><span class="status-pill ${statusClass}">${statusLabel}</span></div>
+            <div><span class="status-pill ${sClass}">${sLabel}</span></div>
             <div class="app-actions">${approveBtn}${rejectBtn}${msgBtn}</div>
-          </div>
-        `;
+          </div>`;
       }).join('');
     }
 
-    // ============================================
-    // Filter
-    // ============================================
     function filterApps(filter, el) {
       currentFilter = filter;
       document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -356,46 +278,27 @@
       renderApplications(filter);
     }
 
-    // ============================================
-    // Approve / Reject
-    // ============================================
     async function updateStatus(id, status) {
-      const { error } = await client
-        .from('applications')
-        .update({ status })
-        .eq('id', id);
-
-      if (error) {
-        showToast('Error: ' + error.message);
-        return;
-      }
-
-      // Update local data
+      const { error } = await client.from('applications').update({ status }).eq('id', id);
+      if (error) { showToast('Error: ' + error.message); return; }
       const app = allApplications.find(a => a.id === id);
       if (app) app.status = status;
-
       updateStats();
       renderApplications(currentFilter);
       showToast(status === 'approved' ? '✓ Application approved' : '✗ Application rejected');
     }
 
-    // ============================================
-    // Message modal
-    // ============================================
     function openModal(email, name) {
       msgEmail = email;
       document.getElementById('msgRecipient').textContent = 'To: ' + name + ' (' + email + ')';
       document.getElementById('msgSubject').value = 'Your Harper application';
-      document.getElementById('msgBody').value = '';
+      document.getElementById('msgBody').value    = '';
       document.getElementById('msgModal').classList.add('show');
     }
 
-    function closeModal() {
-      document.getElementById('msgModal').classList.remove('show');
-    }
+    function closeModal() { document.getElementById('msgModal').classList.remove('show'); }
 
     function sendMessage() {
-      // Opens default email client with pre-filled message
       const subject = encodeURIComponent(document.getElementById('msgSubject').value);
       const body    = encodeURIComponent(document.getElementById('msgBody').value);
       window.location.href = `mailto:${msgEmail}?subject=${subject}&body=${body}`;
@@ -403,9 +306,6 @@
       showToast('Opening email client…');
     }
 
-    // ============================================
-    // Toast notification
-    // ============================================
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
@@ -413,7 +313,6 @@
       setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // Close modal on overlay click
     document.getElementById('msgModal').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
     });
