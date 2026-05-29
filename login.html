@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Harper</title>
+  <link rel="stylesheet" href="css/harper.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { background: var(--gray-pale); }
+    .shell { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+    .logo { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.18em; color: var(--black); text-decoration: none; margin-bottom: 2rem; }
+    .logo .a { color: var(--gold); }
+    .card { background: var(--white); border: var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 400px; padding: 2.25rem 2.5rem; }
+    .card-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; margin-bottom: 6px; }
+    .card-sub { font-size: 0.82rem; color: var(--gray-mid); margin-bottom: 1.75rem; line-height: 1.7; }
+    .error-msg { background: #fff0f0; border: 0.5px solid #ffcccc; border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.78rem; color: #cc0000; margin-bottom: 1rem; display: none; }
+    .error-msg.show { display: block; }
+    .success-msg { background: var(--green-pale); border: 0.5px solid #b2d89a; border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.78rem; color: var(--green); margin-bottom: 1rem; display: none; }
+    .success-msg.show { display: block; }
+    .divider-row { display: flex; align-items: center; gap: 10px; margin: 1.25rem 0; }
+    .divider-line { flex: 1; height: 0.5px; background: var(--border-mid); }
+    .divider-text { font-size: 0.68rem; color: var(--gray-light); letter-spacing: 0.06em; }
+    .switch-link { text-align: center; margin-top: 1.25rem; font-size: 0.78rem; color: var(--gray-mid); }
+    .switch-link a { color: var(--gold); cursor: pointer; }
+    .forgot-link { text-align: right; margin-top: -0.75rem; margin-bottom: 1rem; }
+    .forgot-link a { font-size: 0.72rem; color: var(--gold); cursor: pointer; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .bottom-links { margin-top: 1.5rem; text-align: center; }
+    .bottom-links a { font-size: 0.72rem; color: var(--gray-light); margin: 0 8px; }
+    .bottom-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <a href="index.html" class="logo">H<span class="a">A</span>RPER</a>
+
+    <div class="card">
+
+      <!-- Sign in view -->
+      <div class="view active" id="view-signin">
+        <div class="card-title">Welcome back</div>
+        <div class="card-sub">Sign in to access your Harper membership.</div>
+        <div id="signinError" class="error-msg"></div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="signinEmail" placeholder="alexandra@example.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="signinPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') signIn()" />
+        </div>
+        <div class="forgot-link"><a onclick="showView('view-forgot')">Forgot password?</a></div>
+        <button class="btn btn-gold btn-full" id="signinBtn" onclick="signIn()">Sign in →</button>
+        <div class="divider-row"><div class="divider-line"></div><div class="divider-text">NEW TO HARPER</div><div class="divider-line"></div></div>
+        <a href="apply.html" class="btn btn-outline btn-full">Apply for membership</a>
+        <div class="switch-link" style="margin-top:1rem;">
+          Are you a landlord? <a href="landlord-listing.html">List a property →</a>
+        </div>
+      </div>
+
+      <!-- Forgot password view -->
+      <div class="view" id="view-forgot">
+        <div class="card-title">Reset password</div>
+        <div class="card-sub">Enter your email and we'll send you a reset link.</div>
+        <div id="forgotError" class="error-msg"></div>
+        <div id="forgotSuccess" class="success-msg"></div>
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="forgotEmail" placeholder="alexandra@example.com" />
+        </div>
+        <button class="btn btn-gold btn-full" id="forgotBtn" onclick="resetPassword()">Send reset link →</button>
+        <div class="switch-link"><a onclick="showView('view-signin')">← Back to sign in</a></div>
+      </div>
+
+      <!-- Signed in / success view -->
+      <div class="view" id="view-success">
+        <div style="text-align:center; padding: 1rem 0;">
+          <div style="width:56px;height:56px;border-radius:50%;border:0.5px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+            <i class="ti ti-check" style="font-size:1.4rem;color:var(--gold);"></i>
+          </div>
+          <div class="card-title">You're in</div>
+          <div class="card-sub">Welcome back to Harper. Taking you to your dashboard…</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+
+  <script>
+    const { createClient } = supabase;
+    const client = createClient(
+      'https://qooofbxwhjmeoyhsihki.supabase.co',
+      'sb_publishable_7J8djU8_1ORfR2e_CFTO3g_ED2OaUPU'
+    );
+
+    // Check if already signed in
+    client.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        showView('view-success');
+        setTimeout(() => window.location.href = 'renter-dashboard.html', 1500);
+      }
+    });
+
+    function showView(id) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    async function signIn() {
+      const email    = document.getElementById('signinEmail').value.trim();
+      const password = document.getElementById('signinPassword').value;
+      const errorEl  = document.getElementById('signinError');
+      const btn      = document.getElementById('signinBtn');
+
+      if (!email || !password) {
+        errorEl.textContent = 'Please enter your email and password.';
+        errorEl.classList.add('show');
+        return;
+      }
+
+      errorEl.classList.remove('show');
+      btn.textContent = 'Signing in…';
+      btn.disabled = true;
+
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        errorEl.textContent = error.message === 'Invalid login credentials'
+          ? 'Incorrect email or password. Please try again.'
+          : error.message;
+        errorEl.classList.add('show');
+        btn.textContent = 'Sign in →';
+        btn.disabled = false;
+        return;
+      }
+
+      btn.textContent = 'Sign in →';
+      btn.disabled = false;
+      showView('view-success');
+      setTimeout(() => window.location.href = 'renter-dashboard.html', 1500);
+    }
+
+    async function resetPassword() {
+      const email   = document.getElementById('forgotEmail').value.trim();
+      const errorEl = document.getElementById('forgotError');
+      const successEl = document.getElementById('forgotSuccess');
+      const btn     = document.getElementById('forgotBtn');
+
+      if (!email) {
+        errorEl.textContent = 'Please enter your email address.';
+        errorEl.classList.add('show');
+        return;
+      }
+
+      errorEl.classList.remove('show');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/login.html'
+      });
+
+      btn.textContent = 'Send reset link →';
+      btn.disabled = false;
+
+      if (error) {
+        errorEl.textContent = error.message;
+        errorEl.classList.add('show');
+      } else {
+        successEl.textContent = 'Reset link sent — check your email inbox.';
+        successEl.classList.add('show');
+      }
+    }
+  </script>
+</body>
+</html>
