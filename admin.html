@@ -23,11 +23,16 @@
     .admin-logo { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.18em; color: var(--black); }
     .admin-logo .a { color: var(--gold); }
     .admin-tag { font-size: 0.62rem; letter-spacing: 0.14em; color: var(--gray-light); text-transform: uppercase; margin-left: 8px; }
-    .admin-nav-right { display: flex; align-items: center; gap: 12px; }
+    .admin-nav-tabs { display: flex; gap: 4px; }
+    .nav-tab { padding: 6px 16px; border-radius: 20px; font-size: 0.75rem; color: var(--gray-mid); cursor: pointer; border: var(--border); background: var(--white); font-family: var(--font-body); transition: all 0.15s; }
+    .nav-tab:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-tab.active { background: var(--gold); color: var(--white); border-color: var(--gold); }
     .admin-main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
-    .admin-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; }
-    .admin-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; }
-    .admin-sub { font-size: 0.82rem; color: var(--gray-mid); margin-top: 4px; }
+    .section-view { display: none; }
+    .section-view.active { display: block; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; }
+    .page-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; }
+    .page-sub { font-size: 0.82rem; color: var(--gray-mid); margin-top: 4px; }
     .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
     .stat-card { background: var(--white); border: var(--border); border-radius: var(--radius-md); padding: 1rem; }
     .stat-label { font-size: 0.65rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; margin-bottom: 6px; }
@@ -37,25 +42,25 @@
     .filter-tab { padding: 6px 16px; border: var(--border); border-radius: 20px; font-size: 0.75rem; color: var(--gray-mid); cursor: pointer; background: var(--white); font-family: var(--font-body); transition: all 0.15s; }
     .filter-tab:hover { border-color: var(--gold); color: var(--gold); }
     .filter-tab.active { background: var(--gold); color: var(--white); border-color: var(--gold); }
-    .applications-table { background: var(--white); border: var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .table-header { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 160px; gap: 1rem; padding: 10px 1.25rem; background: var(--gray-pale); border-bottom: var(--border); }
+    .data-table { background: var(--white); border: var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .table-header { display: grid; gap: 1rem; padding: 10px 1.25rem; background: var(--gray-pale); border-bottom: var(--border); }
     .th { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--gray-light); text-transform: uppercase; font-weight: 500; }
-    .app-row { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 160px; gap: 1rem; padding: 14px 1.25rem; border-bottom: var(--border); align-items: center; transition: background 0.15s; }
-    .app-row:last-child { border-bottom: none; }
-    .app-row:hover { background: var(--gray-pale); }
-    .app-name { font-size: 0.85rem; font-weight: 500; color: var(--black); }
-    .app-email { font-size: 0.72rem; color: var(--gray-mid); margin-top: 2px; }
-    .app-cell { font-size: 0.78rem; color: var(--gray-mid); }
-    .app-date { font-size: 0.72rem; color: var(--gray-light); }
-    .app-actions { display: flex; gap: 5px; flex-wrap: wrap; }
-    .action-btn { padding: 5px 10px; border-radius: var(--radius-md); font-size: 0.68rem; cursor: pointer; font-family: var(--font-body); letter-spacing: 0.04em; border: none; transition: all 0.15s; }
+    .data-row { display: grid; gap: 1rem; padding: 14px 1.25rem; border-bottom: var(--border); align-items: center; transition: background 0.15s; }
+    .data-row:last-child { border-bottom: none; }
+    .data-row:hover { background: var(--gray-pale); }
+    .row-name { font-size: 0.85rem; font-weight: 500; color: var(--black); }
+    .row-sub { font-size: 0.72rem; color: var(--gray-mid); margin-top: 2px; }
+    .row-cell { font-size: 0.78rem; color: var(--gray-mid); }
+    .row-date { font-size: 0.72rem; color: var(--gray-light); }
+    .row-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+    .action-btn { padding: 5px 10px; border-radius: var(--radius-md); font-size: 0.68rem; cursor: pointer; font-family: var(--font-body); border: none; transition: all 0.15s; }
     .btn-approve { background: var(--green-pale); color: var(--green); }
     .btn-approve:hover { background: var(--green); color: var(--white); }
     .btn-reject { background: #fff0f0; color: #cc4444; }
     .btn-reject:hover { background: #cc4444; color: var(--white); }
     .btn-msg { background: var(--gold-pale); color: var(--gold-dark); }
     .btn-msg:hover { background: var(--gold); color: var(--white); }
-    .status-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; letter-spacing: 0.04em; }
+    .status-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; }
     .status-pending { background: var(--amber-pale); color: var(--amber); }
     .status-approved { background: var(--green-pale); color: var(--green); }
     .status-rejected { background: #fff0f0; color: #cc4444; }
@@ -69,23 +74,29 @@
     .modal-actions { display: flex; gap: 10px; margin-top: 1.25rem; }
     .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--black); color: var(--white); padding: 12px 20px; border-radius: var(--radius-md); font-size: 0.82rem; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 300; }
     .toast.show { opacity: 1; }
+    /* Applications table columns */
+    .apps-table-header { grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 160px; }
+    .apps-data-row { grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr 160px; }
+    /* Listings table columns */
+    .listings-table-header { grid-template-columns: 2fr 1fr 1fr 1fr 1fr 160px; }
+    .listings-data-row { grid-template-columns: 2fr 1fr 1fr 1fr 1fr 160px; }
   </style>
 </head>
 <body>
 
-  <!-- Login Screen -->
+  <!-- Login -->
   <div class="login-shell" id="loginScreen">
     <div class="login-card">
       <div class="login-logo">H<span class="a">A</span>RPER</div>
       <div class="login-label">Admin Portal</div>
       <div class="login-title">Sign in</div>
-      <div class="login-sub">This area is restricted to Harper administrators only.</div>
+      <div class="login-sub">Restricted to Harper administrators only.</div>
       <div id="loginError" class="error-msg"></div>
       <div class="form-group" style="text-align:left;">
         <label class="form-label">Password</label>
         <input class="form-input" type="password" id="adminPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') adminLogin()" />
       </div>
-      <button class="btn btn-gold btn-full" id="loginBtn" onclick="adminLogin()">Sign in →</button>
+      <button class="btn btn-gold btn-full" onclick="adminLogin()">Sign in →</button>
     </div>
   </div>
 
@@ -96,49 +107,83 @@
         <div class="admin-logo">H<span class="a">A</span>RPER</div>
         <span class="admin-tag">· Admin</span>
       </div>
-      <div class="admin-nav-right">
-        <button class="btn btn-ghost btn-sm" onclick="adminLogout()">Sign out</button>
+      <div class="admin-nav-tabs">
+        <button class="nav-tab active" onclick="showSection('applications', this)">Applications</button>
+        <button class="nav-tab" onclick="showSection('listings', this)">Listings</button>
       </div>
+      <button class="btn btn-ghost btn-sm" onclick="adminLogout()">Sign out</button>
     </nav>
 
     <div class="admin-main">
-      <div class="admin-header">
-        <div>
-          <div class="admin-title">Applications</div>
-          <div class="admin-sub">Review and manage renter membership applications.</div>
+
+      <!-- Applications section -->
+      <div id="section-applications" class="section-view active">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Applications</div>
+            <div class="page-sub">Review and manage renter membership applications.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadApplications()"><i class="ti ti-refresh" style="font-size:0.85rem; vertical-align:-1px; margin-right:4px;"></i>Refresh</button>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="loadApplications()">
-          <i class="ti ti-refresh" style="font-size:0.85rem; vertical-align:-1px; margin-right:4px;"></i>Refresh
-        </button>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val" id="statTotal">—</div><div class="stat-sub">applications</div></div>
-        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val" id="statPending">—</div><div class="stat-sub">awaiting review</div></div>
-        <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-val" id="statApproved">—</div><div class="stat-sub">active members</div></div>
-        <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-val" id="statRejected">—</div><div class="stat-sub">not approved</div></div>
-      </div>
-
-      <div class="filter-tabs">
-        <button class="filter-tab active" onclick="filterApps('all', this)">All</button>
-        <button class="filter-tab" onclick="filterApps('pending', this)">Pending</button>
-        <button class="filter-tab" onclick="filterApps('approved', this)">Approved</button>
-        <button class="filter-tab" onclick="filterApps('rejected', this)">Rejected</button>
-      </div>
-
-      <div class="applications-table">
-        <div class="table-header">
-          <div class="th">Applicant</div>
-          <div class="th">Income / Employment</div>
-          <div class="th">How they heard</div>
-          <div class="th">Applied</div>
-          <div class="th">Status</div>
-          <div class="th">Actions</div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val" id="appTotal">—</div><div class="stat-sub">applications</div></div>
+          <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val" id="appPending">—</div><div class="stat-sub">awaiting review</div></div>
+          <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-val" id="appApproved">—</div><div class="stat-sub">active members</div></div>
+          <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-val" id="appRejected">—</div><div class="stat-sub">not approved</div></div>
         </div>
-        <div id="appsList">
-          <div class="loading-state">Loading applications…</div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterApps('all', this)">All</button>
+          <button class="filter-tab" onclick="filterApps('pending', this)">Pending</button>
+          <button class="filter-tab" onclick="filterApps('approved', this)">Approved</button>
+          <button class="filter-tab" onclick="filterApps('rejected', this)">Rejected</button>
+        </div>
+        <div class="data-table">
+          <div class="table-header apps-table-header">
+            <div class="th">Applicant</div>
+            <div class="th">Income / Employment</div>
+            <div class="th">How they heard</div>
+            <div class="th">Applied</div>
+            <div class="th">Status</div>
+            <div class="th">Actions</div>
+          </div>
+          <div id="appsList"><div class="loading-state">Loading…</div></div>
         </div>
       </div>
+
+      <!-- Listings section -->
+      <div id="section-listings" class="section-view">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Listings</div>
+            <div class="page-sub">Review and approve landlord listing submissions.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadListings()"><i class="ti ti-refresh" style="font-size:0.85rem; vertical-align:-1px; margin-right:4px;"></i>Refresh</button>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val" id="lstTotal">—</div><div class="stat-sub">listings</div></div>
+          <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val" id="lstPending">—</div><div class="stat-sub">awaiting review</div></div>
+          <div class="stat-card"><div class="stat-label">Live</div><div class="stat-val" id="lstApproved">—</div><div class="stat-sub">active listings</div></div>
+          <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-val" id="lstRejected">—</div><div class="stat-sub">not approved</div></div>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterListings('all', this)">All</button>
+          <button class="filter-tab" onclick="filterListings('pending', this)">Pending</button>
+          <button class="filter-tab" onclick="filterListings('approved', this)">Live</button>
+          <button class="filter-tab" onclick="filterListings('rejected', this)">Rejected</button>
+        </div>
+        <div class="data-table">
+          <div class="table-header listings-table-header">
+            <div class="th">Property</div>
+            <div class="th">Rent / Size</div>
+            <div class="th">Landlord</div>
+            <div class="th">Submitted</div>
+            <div class="th">Status</div>
+            <div class="th">Actions</div>
+          </div>
+          <div id="listingsList"><div class="loading-state">Loading…</div></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -146,14 +191,14 @@
   <div class="modal-overlay" id="msgModal">
     <div class="modal">
       <div class="modal-title">Send a message</div>
-      <div class="modal-sub" id="msgRecipient">To: —</div>
+      <div class="modal-sub" id="msgRecipient"></div>
       <div class="form-group">
         <label class="form-label">Subject</label>
-        <input class="form-input" type="text" id="msgSubject" placeholder="Your Harper application" />
+        <input class="form-input" type="text" id="msgSubject" />
       </div>
       <div class="form-group">
         <label class="form-label">Message</label>
-        <textarea class="form-textarea" id="msgBody" style="min-height:120px;" placeholder="Write your message…"></textarea>
+        <textarea class="form-textarea" id="msgBody" style="min-height:120px;"></textarea>
       </div>
       <div class="modal-actions">
         <button class="btn btn-ghost" style="flex:1;" onclick="closeModal()">Cancel</button>
@@ -173,28 +218,25 @@
     );
 
     let allApplications = [];
-    let currentFilter   = 'all';
+    let allListings     = [];
+    let appFilter       = 'all';
+    let lstFilter       = 'all';
     let msgEmail        = '';
 
+    // ---- Auth ----
     function adminLogin() {
-      const password = document.getElementById('adminPassword').value;
-      const errorEl  = document.getElementById('loginError');
-
-      if (!password) {
-        errorEl.textContent = 'Please enter the admin password.';
-        errorEl.classList.add('show');
+      const pw = document.getElementById('adminPassword').value;
+      const err = document.getElementById('loginError');
+      if (pw !== ADMIN_PASSWORD) {
+        err.textContent = pw ? 'Incorrect password.' : 'Please enter the password.';
+        err.classList.add('show');
         return;
       }
-      if (password !== ADMIN_PASSWORD) {
-        errorEl.textContent = 'Incorrect password. Please try again.';
-        errorEl.classList.add('show');
-        return;
-      }
-
-      errorEl.classList.remove('show');
+      err.classList.remove('show');
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminShell').style.display  = 'block';
       loadApplications();
+      loadListings();
     }
 
     function adminLogout() {
@@ -203,101 +245,150 @@
       document.getElementById('adminPassword').value = '';
     }
 
-    async function loadApplications() {
-      document.getElementById('appsList').innerHTML = '<div class="loading-state">Loading applications…</div>';
-
-      const { data, error } = await client
-        .from('applications')
-        .select('*')
-        .order('submitted_at', { ascending: false });
-
-      if (error) {
-        document.getElementById('appsList').innerHTML = '<div class="empty-state">Error: ' + error.message + '</div>';
-        return;
-      }
-
-      allApplications = data || [];
-      updateStats();
-      renderApplications(currentFilter);
+    // ---- Section switching ----
+    function showSection(id, el) {
+      document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('section-' + id).classList.add('active');
+      el.classList.add('active');
     }
 
-    function updateStats() {
-      document.getElementById('statTotal').textContent    = allApplications.length;
-      document.getElementById('statPending').textContent  = allApplications.filter(a => a.status === 'pending').length;
-      document.getElementById('statApproved').textContent = allApplications.filter(a => a.status === 'approved').length;
-      document.getElementById('statRejected').textContent = allApplications.filter(a => a.status === 'rejected').length;
+    // ---- Applications ----
+    async function loadApplications() {
+      document.getElementById('appsList').innerHTML = '<div class="loading-state">Loading…</div>';
+      const { data, error } = await client.from('applications').select('*').order('submitted_at', { ascending: false });
+      if (error) { document.getElementById('appsList').innerHTML = '<div class="empty-state">Error: ' + error.message + '</div>'; return; }
+      allApplications = data || [];
+      updateAppStats();
+      renderApplications(appFilter);
+    }
+
+    function updateAppStats() {
+      document.getElementById('appTotal').textContent    = allApplications.length;
+      document.getElementById('appPending').textContent  = allApplications.filter(a => a.status === 'pending').length;
+      document.getElementById('appApproved').textContent = allApplications.filter(a => a.status === 'approved').length;
+      document.getElementById('appRejected').textContent = allApplications.filter(a => a.status === 'rejected').length;
     }
 
     function renderApplications(filter) {
       const list = filter === 'all' ? allApplications : allApplications.filter(a => a.status === filter);
       const el   = document.getElementById('appsList');
-
-      if (list.length === 0) {
-        el.innerHTML = '<div class="empty-state">No ' + (filter === 'all' ? '' : filter + ' ') + 'applications yet.</div>';
-        return;
-      }
-
+      if (!list.length) { el.innerHTML = '<div class="empty-state">No ' + (filter === 'all' ? '' : filter + ' ') + 'applications.</div>'; return; }
       el.innerHTML = list.map(app => {
-        const name    = ((app.first_name || '') + ' ' + (app.last_name || '')).trim() || '—';
-        const email   = app.email || '—';
-        const income  = app.income_range || '—';
-        const employ  = app.employment || '—';
-        const heard   = app.referral_source || '—';
-        const notes   = app.notes ? `<div style="font-size:0.7rem;color:var(--gray-light);margin-top:3px;font-style:italic;">"${app.notes}"</div>` : '';
-        const date    = app.submitted_at ? new Date(app.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
-        const status  = app.status || 'pending';
-        const sClass  = status === 'approved' ? 'status-approved' : status === 'rejected' ? 'status-rejected' : 'status-pending';
-        const sLabel  = status.charAt(0).toUpperCase() + status.slice(1);
-        const safeEmail = email.replace(/'/g, "\\'");
-        const safeName  = name.replace(/'/g, "\\'");
-
-        const approveBtn = status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateStatus('${app.id}','approved')">Approve</button>` : '';
-        const rejectBtn  = status !== 'rejected'  ? `<button class="action-btn btn-reject"  onclick="updateStatus('${app.id}','rejected')">Reject</button>`   : '';
-        const msgBtn     = `<button class="action-btn btn-msg" onclick="openModal('${safeEmail}','${safeName}')">Message</button>`;
-
-        return `
-          <div class="app-row">
-            <div>
-              <div class="app-name">${name}</div>
-              <div class="app-email">${email}</div>
-              ${notes}
-            </div>
-            <div class="app-cell">${income}<br><span style="font-size:0.7rem;color:var(--gray-light);">${employ}</span></div>
-            <div class="app-cell">${heard}</div>
-            <div class="app-date">${date}</div>
-            <div><span class="status-pill ${sClass}">${sLabel}</span></div>
-            <div class="app-actions">${approveBtn}${rejectBtn}${msgBtn}</div>
-          </div>`;
+        const name   = ((app.first_name || '') + ' ' + (app.last_name || '')).trim() || '—';
+        const email  = app.email || '—';
+        const income = app.income_range || '—';
+        const employ = app.employment || '—';
+        const heard  = app.referral_source || '—';
+        const notes  = app.notes ? `<div style="font-size:0.7rem;color:var(--gray-light);margin-top:3px;font-style:italic;">"${app.notes}"</div>` : '';
+        const date   = app.submitted_at ? new Date(app.submitted_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+        const status = app.status || 'pending';
+        const sClass = status === 'approved' ? 'status-approved' : status === 'rejected' ? 'status-rejected' : 'status-pending';
+        const se = email.replace(/'/g,"\\'"), sn = name.replace(/'/g,"\\'");
+        const approveBtn = status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateAppStatus('${app.id}','approved')">Approve</button>` : '';
+        const rejectBtn  = status !== 'rejected'  ? `<button class="action-btn btn-reject"  onclick="updateAppStatus('${app.id}','rejected')">Reject</button>`   : '';
+        const msgBtn     = `<button class="action-btn btn-msg" onclick="openModal('${se}','${sn}','Your Harper application')">Message</button>`;
+        return `<div class="data-row apps-data-row">
+          <div><div class="row-name">${name}</div><div class="row-sub">${email}</div>${notes}</div>
+          <div class="row-cell">${income}<br><span style="font-size:0.7rem;color:var(--gray-light);">${employ}</span></div>
+          <div class="row-cell">${heard}</div>
+          <div class="row-date">${date}</div>
+          <div><span class="status-pill ${sClass}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></div>
+          <div class="row-actions">${approveBtn}${rejectBtn}${msgBtn}</div>
+        </div>`;
       }).join('');
     }
 
     function filterApps(filter, el) {
-      currentFilter = filter;
-      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      appFilter = filter;
+      document.querySelectorAll('#section-applications .filter-tab').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
       renderApplications(filter);
     }
 
-    async function updateStatus(id, status) {
+    async function updateAppStatus(id, status) {
       const { error } = await client.from('applications').update({ status }).eq('id', id);
       if (error) { showToast('Error: ' + error.message); return; }
       const app = allApplications.find(a => a.id === id);
       if (app) app.status = status;
-      updateStats();
-      renderApplications(currentFilter);
+      updateAppStats();
+      renderApplications(appFilter);
       showToast(status === 'approved' ? '✓ Application approved' : '✗ Application rejected');
     }
 
-    function openModal(email, name) {
+    // ---- Listings ----
+    async function loadListings() {
+      document.getElementById('listingsList').innerHTML = '<div class="loading-state">Loading…</div>';
+      const { data, error } = await client.from('listings').select('*').order('submitted_at', { ascending: false });
+      if (error) { document.getElementById('listingsList').innerHTML = '<div class="empty-state">Error: ' + error.message + '</div>'; return; }
+      allListings = data || [];
+      updateLstStats();
+      renderListings(lstFilter);
+    }
+
+    function updateLstStats() {
+      document.getElementById('lstTotal').textContent    = allListings.length;
+      document.getElementById('lstPending').textContent  = allListings.filter(l => l.status === 'pending').length;
+      document.getElementById('lstApproved').textContent = allListings.filter(l => l.status === 'approved').length;
+      document.getElementById('lstRejected').textContent = allListings.filter(l => l.status === 'rejected').length;
+    }
+
+    function renderListings(filter) {
+      const list = filter === 'all' ? allListings : allListings.filter(l => l.status === filter);
+      const el   = document.getElementById('listingsList');
+      if (!list.length) { el.innerHTML = '<div class="empty-state">No ' + (filter === 'all' ? '' : filter + ' ') + 'listings.</div>'; return; }
+      el.innerHTML = list.map(lst => {
+        const addr    = (lst.address || '—') + (lst.unit ? ', Unit ' + lst.unit : '');
+        const hood    = lst.neighborhood || '—';
+        const rent    = lst.rent ? '$' + lst.rent + '/mo' : '—';
+        const size    = [lst.bedrooms ? lst.bedrooms + ' bd' : '', lst.sqft ? lst.sqft + ' sf' : ''].filter(Boolean).join(' · ') || '—';
+        const lname   = lst.landlord_name || '—';
+        const lemail  = lst.landlord_email || '—';
+        const date    = lst.submitted_at ? new Date(lst.submitted_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+        const status  = lst.status || 'pending';
+        const sClass  = status === 'approved' ? 'status-approved' : status === 'rejected' ? 'status-rejected' : 'status-pending';
+        const sLabel  = status === 'approved' ? 'Live' : status.charAt(0).toUpperCase()+status.slice(1);
+        const se = lemail.replace(/'/g,"\\'"), sn = lname.replace(/'/g,"\\'");
+        const approveBtn = status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateLstStatus('${lst.id}','approved')">Approve</button>` : '';
+        const rejectBtn  = status !== 'rejected'  ? `<button class="action-btn btn-reject"  onclick="updateLstStatus('${lst.id}','rejected')">Reject</button>`   : '';
+        const msgBtn     = `<button class="action-btn btn-msg" onclick="openModal('${se}','${sn}','Your Harper listing')">Message</button>`;
+        return `<div class="data-row listings-data-row">
+          <div><div class="row-name">${addr}</div><div class="row-sub">${hood}</div></div>
+          <div class="row-cell">${rent}<br><span style="font-size:0.7rem;color:var(--gray-light);">${size}</span></div>
+          <div class="row-cell">${lname}<br><span style="font-size:0.7rem;color:var(--gray-light);">${lemail}</span></div>
+          <div class="row-date">${date}</div>
+          <div><span class="status-pill ${sClass}">${sLabel}</span></div>
+          <div class="row-actions">${approveBtn}${rejectBtn}${msgBtn}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function filterListings(filter, el) {
+      lstFilter = filter;
+      document.querySelectorAll('#section-listings .filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderListings(filter);
+    }
+
+    async function updateLstStatus(id, status) {
+      const { error } = await client.from('listings').update({ status }).eq('id', id);
+      if (error) { showToast('Error: ' + error.message); return; }
+      const lst = allListings.find(l => l.id === id);
+      if (lst) lst.status = status;
+      updateLstStats();
+      renderListings(lstFilter);
+      showToast(status === 'approved' ? '✓ Listing approved — now live' : '✗ Listing rejected');
+    }
+
+    // ---- Message modal ----
+    function openModal(email, name, subject) {
       msgEmail = email;
       document.getElementById('msgRecipient').textContent = 'To: ' + name + ' (' + email + ')';
-      document.getElementById('msgSubject').value = 'Your Harper application';
+      document.getElementById('msgSubject').value = subject || '';
       document.getElementById('msgBody').value    = '';
       document.getElementById('msgModal').classList.add('show');
     }
-
     function closeModal() { document.getElementById('msgModal').classList.remove('show'); }
-
     function sendMessage() {
       const subject = encodeURIComponent(document.getElementById('msgSubject').value);
       const body    = encodeURIComponent(document.getElementById('msgBody').value);
@@ -306,6 +397,7 @@
       showToast('Opening email client…');
     }
 
+    // ---- Toast ----
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
@@ -313,9 +405,7 @@
       setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    document.getElementById('msgModal').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
-    });
+    document.getElementById('msgModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
   </script>
 </body>
 </html>
